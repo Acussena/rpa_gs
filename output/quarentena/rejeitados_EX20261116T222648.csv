@@ -1,0 +1,9 @@
+﻿arquivo;linha;id_bueiro;motivo
+2026-11-16_inspecao_robo.csv;23;BL-001;linha duplicada
+2026-11-16_inspecao_robo.csv;24;BL-002;bueiro repetido no mesmo lote (mantida a mais recente)
+2026-11-16_inspecao_robo.csv;25;BL-006;nivel_obstrucao fora de 0-100: 150
+2026-11-16_inspecao_robo.csv;26;BL-999;bueiro não cadastrado (dado inconsistente)
+2026-11-16_inspecao_robo.csv;27;BL-010;data_hora_inspecao inválida: '16/11/2026 08h'
+2026-11-16_inspecao_robo.csv;28;BL-011;data_hora_inspecao no futuro (dado inconsistente)
+2026-11-16_inspecao_robo.csv;29;BL-012;nivel_obstrucao vazio
+2026-11-16_inspecao_robo_drone2.csv;-;-;colunas ausentes: ['confianca_visao', 'data_hora_inspecao', 'foto_ref', 'id_bueiro', 'nivel_obstrucao', 'tipo_residuo']

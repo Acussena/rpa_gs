@@ -1,0 +1,13 @@
+$ python src/main.py --falhar-api
+22:26:42 INFO    [inicio] Execução EX20261116T222642 iniciada
+22:26:42 WARNING [previsao] Tentativa 1/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+22:26:43 WARNING [previsao] Tentativa 2/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+22:26:45 WARNING [previsao] Tentativa 3/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+22:26:45 WARNING [previsao] API indisponível após todas as tentativas - acionando contingência (cache)
+22:26:45 WARNING [previsao] Nenhum cache de previsão disponível
+22:26:45 ERROR   [falha] Execução interrompida de forma controlada: API de previsão fora do ar e sem cache válido
+22:26:45 INFO    [notificacao] Resumo registrado no canal da operação (webhook não configurado)
+22:26:45 INFO    [fim] Execução EX20261116T222642 finalizada: FALHA_PREVISAO (código 2)
+
+==> FALHA_PREVISAO | nível: - | OS: 0 | alertas: 0 | código de saída: 2
+exit=2

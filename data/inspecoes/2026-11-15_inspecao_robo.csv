@@ -1,0 +1,17 @@
+id_bueiro,data_hora_inspecao,nivel_obstrucao,tipo_residuo,confianca_visao,foto_ref
+BL-001,2026-11-15T14:34:00,38,folhas e plástico,0.87,img/BL-001_2026-11-15.jpg
+BL-002,2026-11-15T15:25:00,51,lixo doméstico,0.98,img/BL-002_2026-11-15.jpg
+BL-003,2026-11-15T08:32:00,68,folhas,0.92,img/BL-003_2026-11-15.jpg
+BL-004,2026-11-15T07:09:00,25,sem resíduos,0.9,img/BL-004_2026-11-15.jpg
+BL-005,2026-11-15T15:04:00,54,areia/terra,0.87,img/BL-005_2026-11-15.jpg
+BL-006,2026-11-15T13:33:00,37,entulho,0.94,img/BL-006_2026-11-15.jpg
+BL-007,2026-11-15T06:43:00,19,folhas e plástico,0.95,img/BL-007_2026-11-15.jpg
+BL-008,2026-11-15T10:49:00,48,folhas,0.8,img/BL-008_2026-11-15.jpg
+BL-009,2026-11-15T08:29:00,5,sem resíduos,0.97,img/BL-009_2026-11-15.jpg
+BL-010,2026-11-15T17:16:00,69,sem resíduos,0.77,img/BL-010_2026-11-15.jpg
+BL-011,2026-11-15T07:55:00,43,sem resíduos,0.89,img/BL-011_2026-11-15.jpg
+BL-012,2026-11-15T15:12:00,24,garrafas PET,0.92,img/BL-012_2026-11-15.jpg
+BL-013,2026-11-15T14:49:00,5,sem resíduos,0.88,img/BL-013_2026-11-15.jpg
+BL-014,2026-11-15T13:01:00,19,garrafas PET,0.95,img/BL-014_2026-11-15.jpg
+BL-022,2026-11-04T09:10:00,55,sem resíduos,0.93,img/BL-022_2026-11-04.jpg
+BL-023,2026-11-04T09:40:00,35,lixo doméstico,0.74,img/BL-023_2026-11-04.jpg

@@ -1,0 +1,31 @@
+test_mascaras (test_bot.TestMascaramento) ... ok
+test_dados_invalidos_vao_para_quarentena (test_bot.TestPontaAPonta) ... ok
+test_decisao_atencao_inclui_menos_bueiros_que_alerta (test_bot.TestPontaAPonta) ... ok
+test_decisao_chuva_fraca_nao_gera_acao (test_bot.TestPontaAPonta) ... ok
+test_falha_api_sem_cache_encerra_com_codigo_2 (test_bot.TestPontaAPonta) ... ok
+test_idempotencia_nao_reenvia_alertas_no_mesmo_dia (test_bot.TestPontaAPonta) ... ok
+test_lgpd_morador_sem_consentimento_nao_recebe (test_bot.TestPontaAPonta) ... ok
+test_logs_nao_expoem_dados_pessoais (test_bot.TestPontaAPonta) ... ok
+test_sem_arquivos_de_inspecao_encerra_com_codigo_3 (test_bot.TestPontaAPonta) ... ok
+test_sucesso_chuva_forte_gera_os_alertas_e_integra_mvp (test_bot.TestPontaAPonta) ... ok
+test_api_fora_sem_cache_levanta_excecao (test_bot.TestPrevisao) ... ok
+test_api_fora_usa_cache_valido (test_bot.TestPrevisao) ... ok
+test_cache_expirado_e_descartado (test_bot.TestPrevisao) ... ok
+test_interpreta_somente_proximas_24h (test_bot.TestPrevisao) ... ok
+test_json_corrompido_conta_como_falha (test_bot.TestPrevisao) ... ok
+test_resposta_incompleta_e_invalida (test_bot.TestPrevisao) ... ok
+test_retentativa_ate_sucesso (test_bot.TestPrevisao) ... ok
+test_chuva_fraca_nao_aciona (test_bot.TestRegrasDeDecisao) ... ok
+test_distribuicao_respeita_capacidade (test_bot.TestRegrasDeDecisao) ... ok
+test_limite_alerta (test_bot.TestRegrasDeDecisao) ... ok
+test_limite_atencao_inclusivo (test_bot.TestRegrasDeDecisao) ... ok
+test_pancada_forte_com_probabilidade_alta_aciona (test_bot.TestRegrasDeDecisao) ... ok
+test_pancada_forte_com_probabilidade_baixa_nao_aciona (test_bot.TestRegrasDeDecisao) ... ok
+test_score_e_prioridade (test_bot.TestRegrasDeDecisao) ... ok
+test_linha_valida (test_bot.TestValidacao) ... ok
+test_rejeicoes (test_bot.TestValidacao) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 1.474s
+
+OK

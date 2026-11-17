@@ -1,0 +1,18 @@
+﻿ordem;id_bueiro;endereco;tipo;area_id;area;lat;lon;nivel_obstrucao;tipo_residuo;data_inspecao;score;prioridade;equipe_id;status;reinspecionar;observacao
+1;BL-001;Rua das Garças, 664;boca de lobo;AR-01;Jardim Pantanal;-23.497825;-46.430575;92.0;folhas;2026-11-16T09:05;94.0;CRITICA;EQ-01;ABERTA;False;
+2;BL-017;Rua Romano, 373;boca de lobo;AR-04;Jardim Romano;-23.486609;-46.402587;95.0;areia/terra;2026-11-16T07:27;93.5;CRITICA;EQ-02;ABERTA;False;
+3;BL-002;Rua do Aguapé, 238;boca de lobo;AR-01;Jardim Pantanal;-23.492845;-46.427763;85.0;entulho;2026-11-16T05:48;90.5;CRITICA;EQ-01;ABERTA;False;
+4;BL-007;Rua Córrego Verde, 838;boca de lobo;AR-02;Vila Itaim;-23.498388;-46.415382;88.0;entulho;2026-11-16T07:28;88.0;CRITICA;EQ-03;ABERTA;False;
+5;BL-004;Rua Taboa, 40;boca de lobo;AR-01;Jardim Pantanal;-23.49647;-46.428963;78.0;entulho;2026-11-16T06:16;87.0;CRITICA;EQ-01;ABERTA;False;
+6;BL-020;Rua Pedra Lisa, 286;sarjeta com grelha;AR-04;Jardim Romano;-23.486483;-46.405963;81.0;lixo doméstico;2026-11-16T05:15;86.5;CRITICA;EQ-02;ABERTA;False;
+7;BL-018;Rua das Lavadeiras, 709;sarjeta com grelha;AR-04;Jardim Romano;-23.4908;-46.403055;74.0;folhas e plástico;2026-11-16T05:43;83.0;CRITICA;EQ-02;ABERTA;False;
+8;BL-006;Rua Martim-Pescador, 568;boca de lobo;AR-01;Jardim Pantanal;-23.496457;-46.428375;66.0;garrafas PET;2026-11-16T06:45;81.0;CRITICA;EQ-01;ABERTA;False;
+9;BL-010;Rua Três Pontes, 377;boca de lobo;AR-02;Vila Itaim;-23.499474;-46.41085;71.0;folhas e plástico;2026-11-16T05:04;79.5;CRITICA;EQ-03;ABERTA;False;
+10;BL-021;Rua Ribeirinha, 342;boca de lobo;AR-04;Jardim Romano;-23.489697;-46.407275;64.0;areia/terra;2026-11-16T08:08;78.0;CRITICA;EQ-02;ABERTA;False;
+11;BL-008;Rua das Palmeiras, 442;boca de lobo;AR-02;Vila Itaim;-23.501755;-46.414993;52.0;folhas;2026-11-16T06:14;70.0;CRITICA;EQ-03;ABERTA;False;
+12;BL-003;Travessa Beira-Rio, 923;sarjeta com grelha;AR-01;Jardim Pantanal;-23.497391;-46.429547;40.0;areia/terra;2026-11-16T06:42;68.0;ALTA;EQ-01;ABERTA;False;
+13;BL-019;Rua Vala Grande, 556;sarjeta com grelha;AR-04;Jardim Romano;-23.489586;-46.404264;38.0;areia/terra;2026-11-16T05:03;65.0;ALTA;EQ-02;ABERTA;False;
+14;BL-009;Rua Itaim Baixo, 791;boca de lobo;AR-02;Vila Itaim;-23.502985;-46.413841;30.0;lixo doméstico;2026-11-16T09:35;59.0;ALTA;EQ-03;ABERTA;False;
+15;BL-013;Rua dos Ipês, 643;boca de lobo;AR-03;Jardim Helena;-23.491259;-46.419068;60.0;entulho;2026-11-16T08:13;58.0;ALTA;EQ-03;ABERTA;True;baixa confiança da visão computacional (0.51)
+16;BL-016;Rua Várzea Nova, 474;sarjeta com grelha;AR-03;Jardim Helena;-23.489461;-46.422861;50.0;folhas;2026-11-16T06:06;53.0;ALTA;;AGUARDANDO_REFORCO;False;
+17;BL-012;Rua Jacarandá, 397;boca de lobo;AR-03;Jardim Helena;-23.491436;-46.418194;45.0;lixo doméstico;2026-11-16T05:32;50.5;ALTA;;AGUARDANDO_REFORCO;False;

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="defs_bocadelobo" targetNamespace="https://citizentech.example/bocadelobo">
+  <bpmn:error id="erro_previsao" name="Previsão indisponível" errorCode="2"/>
+  <bpmn:process id="processo_boca_de_lobo" name="Bot Boca de Lobo - prevenção de alagamentos" isExecutable="false">
+    <bpmn:startEvent id="inicio" name="Todo dia 06:00"><bpmn:outgoing>f_inicio_t_config</bpmn:outgoing><bpmn:timerEventDefinition id="timer"><bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 6 * * *</bpmn:timeCycle></bpmn:timerEventDefinition></bpmn:startEvent>
+    <bpmn:scriptTask id="t_config" name="Carregar configuração e limites de chuva"><bpmn:incoming>f_inicio_t_config</bpmn:incoming><bpmn:outgoing>f_t_config_t_previsao</bpmn:outgoing></bpmn:scriptTask>
+    <bpmn:serviceTask id="t_previsao" name="Consultar previsão Open-Meteo (até 3 tentativas)"><bpmn:incoming>f_t_config_t_previsao</bpmn:incoming><bpmn:outgoing>f_t_previsao_gw_api</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_api" name="API respondeu com dados válidos?"><bpmn:incoming>f_t_previsao_gw_api</bpmn:incoming><bpmn:outgoing>f_gw_api_gw_chuva</bpmn:outgoing><bpmn:outgoing>f_gw_api_t_cache</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="t_cache" name="Ler previsão em cache"><bpmn:incoming>f_gw_api_t_cache</bpmn:incoming><bpmn:outgoing>f_t_cache_gw_cache</bpmn:outgoing></bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="gw_cache" name="Cache com menos de 24h?"><bpmn:incoming>f_t_cache_gw_cache</bpmn:incoming><bpmn:outgoing>f_gw_cache_gw_chuva</bpmn:outgoing><bpmn:outgoing>f_gw_cache_t_falha</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:sendTask id="t_falha" name="Notificar operação: falha (verificação manual)"><bpmn:incoming>f_gw_cache_t_falha</bpmn:incoming><bpmn:outgoing>f_t_falha_fim_erro</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:endEvent id="fim_erro" name="Falha controlada (código 2)"><bpmn:incoming>f_t_falha_fim_erro</bpmn:incoming><bpmn:errorEventDefinition id="err_def" errorRef="erro_previsao"/></bpmn:endEvent>
+    <bpmn:exclusiveGateway id="gw_chuva" name="Chuva prevista ≥ limite?"><bpmn:incoming>f_gw_api_gw_chuva</bpmn:incoming><bpmn:incoming>f_gw_cache_gw_chuva</bpmn:incoming><bpmn:outgoing>f_gw_chuva_t_inspecoes</bpmn:outgoing><bpmn:outgoing>f_gw_chuva_t_sem_acao</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="t_sem_acao" name="Registrar execução sem ação"><bpmn:incoming>f_gw_chuva_t_sem_acao</bpmn:incoming><bpmn:outgoing>f_t_sem_acao_fim_sem_acao</bpmn:outgoing></bpmn:scriptTask>
+    <bpmn:endEvent id="fim_sem_acao" name="Sem ação"><bpmn:incoming>f_t_sem_acao_fim_sem_acao</bpmn:incoming></bpmn:endEvent>
+    <bpmn:scriptTask id="t_inspecoes" name="Ler inspeções do robô + cadastro de bueiros e áreas"><bpmn:incoming>f_gw_chuva_t_inspecoes</bpmn:incoming><bpmn:outgoing>f_t_inspecoes_t_validar</bpmn:outgoing></bpmn:scriptTask>
+    <bpmn:scriptTask id="t_validar" name="Validar, deduplicar e pôr em quarentena (loop por registro)"><bpmn:incoming>f_t_inspecoes_t_validar</bpmn:incoming><bpmn:outgoing>f_t_validar_t_priorizar</bpmn:outgoing><bpmn:standardLoopCharacteristics/></bpmn:scriptTask>
+    <bpmn:businessRuleTask id="t_priorizar" name="Calcular score e classificar prioridade (loop por bueiro)"><bpmn:incoming>f_t_validar_t_priorizar</bpmn:incoming><bpmn:outgoing>f_t_priorizar_t_equipes</bpmn:outgoing><bpmn:standardLoopCharacteristics/></bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="t_equipes" name="Distribuir ordens de serviço às equipes (capacidade)"><bpmn:incoming>f_t_priorizar_t_equipes</bpmn:incoming><bpmn:outgoing>f_t_equipes_t_mvp</bpmn:outgoing></bpmn:businessRuleTask>
+    <bpmn:serviceTask id="t_mvp" name="Publicar no MVP (SQLite + JSON/API)"><bpmn:incoming>f_t_equipes_t_mvp</bpmn:incoming><bpmn:outgoing>f_t_mvp_gw_alerta</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_alerta" name="Há ordens de serviço ou áreas em risco?"><bpmn:incoming>f_t_mvp_gw_alerta</bpmn:incoming><bpmn:outgoing>f_gw_alerta_t_alertas</bpmn:outgoing><bpmn:outgoing>f_gw_alerta_t_auditoria</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:sendTask id="t_alertas" name="Alertar equipes (OS) e moradores das áreas (idempotente, LGPD)"><bpmn:incoming>f_gw_alerta_t_alertas</bpmn:incoming><bpmn:outgoing>f_t_alertas_t_auditoria</bpmn:outgoing><bpmn:standardLoopCharacteristics/></bpmn:sendTask>
+    <bpmn:sendTask id="t_auditoria" name="Notificar operação e registrar auditoria"><bpmn:incoming>f_gw_alerta_t_auditoria</bpmn:incoming><bpmn:incoming>f_t_alertas_t_auditoria</bpmn:incoming><bpmn:outgoing>f_t_auditoria_fim_ok</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:endEvent id="fim_ok" name="Concluído"><bpmn:incoming>f_t_auditoria_fim_ok</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f_inicio_t_config" name="" sourceRef="inicio" targetRef="t_config"/>
+    <bpmn:sequenceFlow id="f_t_config_t_previsao" name="" sourceRef="t_config" targetRef="t_previsao"/>
+    <bpmn:sequenceFlow id="f_t_previsao_gw_api" name="" sourceRef="t_previsao" targetRef="gw_api"/>
+    <bpmn:sequenceFlow id="f_gw_api_gw_chuva" name="Sim" sourceRef="gw_api" targetRef="gw_chuva"/>
+    <bpmn:sequenceFlow id="f_gw_api_t_cache" name="Não" sourceRef="gw_api" targetRef="t_cache"/>
+    <bpmn:sequenceFlow id="f_t_cache_gw_cache" name="" sourceRef="t_cache" targetRef="gw_cache"/>
+    <bpmn:sequenceFlow id="f_gw_cache_gw_chuva" name="Sim" sourceRef="gw_cache" targetRef="gw_chuva"/>
+    <bpmn:sequenceFlow id="f_gw_cache_t_falha" name="Não" sourceRef="gw_cache" targetRef="t_falha"/>
+    <bpmn:sequenceFlow id="f_t_falha_fim_erro" name="" sourceRef="t_falha" targetRef="fim_erro"/>
+    <bpmn:sequenceFlow id="f_gw_chuva_t_inspecoes" name="Sim" sourceRef="gw_chuva" targetRef="t_inspecoes"/>
+    <bpmn:sequenceFlow id="f_gw_chuva_t_sem_acao" name="Não" sourceRef="gw_chuva" targetRef="t_sem_acao"/>
+    <bpmn:sequenceFlow id="f_t_sem_acao_fim_sem_acao" name="" sourceRef="t_sem_acao" targetRef="fim_sem_acao"/>
+    <bpmn:sequenceFlow id="f_t_inspecoes_t_validar" name="" sourceRef="t_inspecoes" targetRef="t_validar"/>
+    <bpmn:sequenceFlow id="f_t_validar_t_priorizar" name="" sourceRef="t_validar" targetRef="t_priorizar"/>
+    <bpmn:sequenceFlow id="f_t_priorizar_t_equipes" name="" sourceRef="t_priorizar" targetRef="t_equipes"/>
+    <bpmn:sequenceFlow id="f_t_equipes_t_mvp" name="" sourceRef="t_equipes" targetRef="t_mvp"/>
+    <bpmn:sequenceFlow id="f_t_mvp_gw_alerta" name="" sourceRef="t_mvp" targetRef="gw_alerta"/>
+    <bpmn:sequenceFlow id="f_gw_alerta_t_alertas" name="Sim" sourceRef="gw_alerta" targetRef="t_alertas"/>
+    <bpmn:sequenceFlow id="f_gw_alerta_t_auditoria" name="Não" sourceRef="gw_alerta" targetRef="t_auditoria"/>
+    <bpmn:sequenceFlow id="f_t_alertas_t_auditoria" name="" sourceRef="t_alertas" targetRef="t_auditoria"/>
+    <bpmn:sequenceFlow id="f_t_auditoria_fim_ok" name="" sourceRef="t_auditoria" targetRef="fim_ok"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagrama">
+    <bpmndi:BPMNPlane id="plano" bpmnElement="processo_boca_de_lobo">
+    <bpmndi:BPMNShape id="inicio_di" bpmnElement="inicio"><dc:Bounds x="42" y="212" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_config_di" bpmnElement="t_config"><dc:Bounds x="115" y="190" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_previsao_di" bpmnElement="t_previsao"><dc:Bounds x="295" y="190" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_api_di" bpmnElement="gw_api" isMarkerVisible="true"><dc:Bounds x="505" y="205" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_cache_di" bpmnElement="t_cache"><dc:Bounds x="455" y="50" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_cache_di" bpmnElement="gw_cache" isMarkerVisible="true"><dc:Bounds x="665" y="65" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_falha_di" bpmnElement="t_falha"><dc:Bounds x="775" y="50" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fim_erro_di" bpmnElement="fim_erro"><dc:Bounds x="972" y="72" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_chuva_di" bpmnElement="gw_chuva" isMarkerVisible="true"><dc:Bounds x="665" y="205" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_sem_acao_di" bpmnElement="t_sem_acao"><dc:Bounds x="615" y="330" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fim_sem_acao_di" bpmnElement="fim_sem_acao"><dc:Bounds x="832" y="352" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_inspecoes_di" bpmnElement="t_inspecoes"><dc:Bounds x="775" y="190" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_validar_di" bpmnElement="t_validar"><dc:Bounds x="955" y="190" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_priorizar_di" bpmnElement="t_priorizar"><dc:Bounds x="955" y="490" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_equipes_di" bpmnElement="t_equipes"><dc:Bounds x="775" y="490" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_mvp_di" bpmnElement="t_mvp"><dc:Bounds x="615" y="490" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_alerta_di" bpmnElement="gw_alerta" isMarkerVisible="true"><dc:Bounds x="505" y="505" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_alertas_di" bpmnElement="t_alertas"><dc:Bounds x="455" y="630" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_auditoria_di" bpmnElement="t_auditoria"><dc:Bounds x="295" y="490" width="150" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fim_ok_di" bpmnElement="fim_ok"><dc:Bounds x="212" y="512" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f_inicio_t_config_di" bpmnElement="f_inicio_t_config"><di:waypoint x="78" y="230"/><di:waypoint x="115" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_config_t_previsao_di" bpmnElement="f_t_config_t_previsao"><di:waypoint x="265" y="230"/><di:waypoint x="295" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_previsao_gw_api_di" bpmnElement="f_t_previsao_gw_api"><di:waypoint x="445" y="230"/><di:waypoint x="505" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_api_gw_chuva_di" bpmnElement="f_gw_api_gw_chuva"><di:waypoint x="555" y="230"/><di:waypoint x="665" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_api_t_cache_di" bpmnElement="f_gw_api_t_cache"><di:waypoint x="530" y="205"/><di:waypoint x="530" y="130"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_cache_gw_cache_di" bpmnElement="f_t_cache_gw_cache"><di:waypoint x="605" y="90"/><di:waypoint x="665" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_cache_gw_chuva_di" bpmnElement="f_gw_cache_gw_chuva"><di:waypoint x="690" y="115"/><di:waypoint x="690" y="205"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_cache_t_falha_di" bpmnElement="f_gw_cache_t_falha"><di:waypoint x="715" y="90"/><di:waypoint x="775" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_falha_fim_erro_di" bpmnElement="f_t_falha_fim_erro"><di:waypoint x="925" y="90"/><di:waypoint x="972" y="90"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_chuva_t_inspecoes_di" bpmnElement="f_gw_chuva_t_inspecoes"><di:waypoint x="715" y="230"/><di:waypoint x="775" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_chuva_t_sem_acao_di" bpmnElement="f_gw_chuva_t_sem_acao"><di:waypoint x="690" y="255"/><di:waypoint x="690" y="330"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_sem_acao_fim_sem_acao_di" bpmnElement="f_t_sem_acao_fim_sem_acao"><di:waypoint x="765" y="370"/><di:waypoint x="832" y="370"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_inspecoes_t_validar_di" bpmnElement="f_t_inspecoes_t_validar"><di:waypoint x="925" y="230"/><di:waypoint x="955" y="230"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_validar_t_priorizar_di" bpmnElement="f_t_validar_t_priorizar"><di:waypoint x="1030" y="270"/><di:waypoint x="1030" y="490"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_priorizar_t_equipes_di" bpmnElement="f_t_priorizar_t_equipes"><di:waypoint x="955" y="530"/><di:waypoint x="925" y="530"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_equipes_t_mvp_di" bpmnElement="f_t_equipes_t_mvp"><di:waypoint x="775" y="530"/><di:waypoint x="765" y="530"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_mvp_gw_alerta_di" bpmnElement="f_t_mvp_gw_alerta"><di:waypoint x="615" y="530"/><di:waypoint x="555" y="530"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_alerta_t_alertas_di" bpmnElement="f_gw_alerta_t_alertas"><di:waypoint x="530" y="555"/><di:waypoint x="530" y="630"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_gw_alerta_t_auditoria_di" bpmnElement="f_gw_alerta_t_auditoria"><di:waypoint x="505" y="530"/><di:waypoint x="445" y="530"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_alertas_t_auditoria_di" bpmnElement="f_t_alertas_t_auditoria"><di:waypoint x="455" y="670"/><di:waypoint x="370" y="670"/><di:waypoint x="370" y="570"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_t_auditoria_fim_ok_di" bpmnElement="f_t_auditoria_fim_ok"><di:waypoint x="295" y="530"/><di:waypoint x="248" y="530"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

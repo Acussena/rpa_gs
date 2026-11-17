@@ -1,0 +1,40 @@
+# Execução agendada do bot: todo dia às 06:00 (horário de Brasília = 09:00 UTC).
+# Também pode ser disparado manualmente (aba Actions > Run workflow), inclusive simulando chuva.
+name: Bot Boca de Lobo (diário)
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+      simular_chuva:
+        description: "Simular chuva em mm/24h (vazio = previsão real)"
+        required: false
+
+jobs:
+  executar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Testes automatizados
+        run: python -m unittest discover -s tests -v
+      - name: Executar bot
+        env:
+          ALERTA_WEBHOOK_URL: ${{ secrets.ALERTA_WEBHOOK_URL }}
+        run: |
+          if [ -n "${{ github.event.inputs.simular_chuva }}" ]; then
+            python src/main.py --simular-chuva "${{ github.event.inputs.simular_chuva }}"
+          else
+            python src/main.py
+          fi
+      - name: Publicar evidências da execução
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execucao-${{ github.run_number }}
+          path: |
+            logs/
+            output/

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CitizenTech · Boca de Lobo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root { --bg:#111114; --card:#1c1c21; --line:#2c2c33; --txt:#ececf1; --mut:#9a9aa6; --pink:#e6175c;
+          --crit:#e5484d; --alta:#f5a524; --media:#e9d94a; --ok:#3fb950; --blue:#58a6ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font:15px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 28px;
+           border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .logo { width:40px; height:40px; border-radius:50%; background:var(--pink); display:grid; place-items:center; font-size:20px; }
+  h1 { font-size:20px; margin:0; } .sub { color:var(--mut); font-size:13px; }
+  button { background:var(--pink); color:#fff; border:0; border-radius:8px; padding:9px 16px; font-weight:600; cursor:pointer; }
+  main { padding:22px 28px; display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .span12{grid-column:span 12}.span8{grid-column:span 8}.span4{grid-column:span 4}.span3{grid-column:span 3}
+  @media (max-width: 900px){ .span8,.span4,.span3{grid-column:span 12} main{padding:16px} }
+  .kpi .v { font-size:34px; font-weight:700; } .kpi .l { color:var(--mut); font-size:13px; text-transform:uppercase; letter-spacing:.06em; }
+  .status { display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
+  .badge { display:inline-block; padding:4px 12px; border-radius:999px; font-weight:700; font-size:13px; letter-spacing:.05em; }
+  .b-ALERTA{background:var(--crit);color:#fff}.b-ATENCAO{background:var(--alta);color:#111}.b-NORMAL{background:var(--ok);color:#111}
+  .b-FALHA,.b-FALHA_PREVISAO,.b-FALHA_DADOS{background:#6e1b1b;color:#fff}
+  .p-CRITICA{color:var(--crit)}.p-ALTA{color:var(--alta)}.p-MEDIA{color:var(--media)}
+  h2 { font-size:15px; margin:0 0 12px; text-transform:uppercase; letter-spacing:.08em; color:#f39ab8; }
+  #mapa { height:420px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; }
+  .scroll { max-height:420px; overflow:auto; }
+  .alerta { border-left:3px solid var(--pink); padding:8px 12px; margin-bottom:10px; background:#24242a; border-radius:6px; font-size:13.5px; }
+  .alerta b { color:#f39ab8; }
+  .mut { color:var(--mut); } .tag { font-size:11px; padding:2px 7px; border-radius:6px; background:#33333b; margin-left:4px; }
+  .legend span { margin-right:14px; font-size:13px; } .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">🌧️</div>
+    <div><h1>CitizenTech · Boca de Lobo</h1><div class="sub">Painel do MVP — resultado do bot RPA de prevenção de alagamentos</div></div>
+  </div>
+  <button onclick="carregar()">Atualizar</button>
+</header>
+<main>
+  <section class="card span12 status" id="status">Carregando…</section>
+  <section class="card span3 kpi"><div class="l">Ordens de serviço</div><div class="v" id="k-os">–</div></section>
+  <section class="card span3 kpi"><div class="l">Bocas de lobo críticas</div><div class="v p-CRITICA" id="k-crit">–</div></section>
+  <section class="card span3 kpi"><div class="l">Aguardando reforço</div><div class="v p-ALTA" id="k-exc">–</div></section>
+  <section class="card span3 kpi"><div class="l">Alertas enviados</div><div class="v" id="k-al">–</div></section>
+
+  <section class="card span8">
+    <h2>Mapa de prioridade</h2>
+    <div id="mapa"></div>
+    <div class="legend" style="margin-top:10px">
+      <span><i class="dot" style="background:var(--crit)"></i>Crítica</span>
+      <span><i class="dot" style="background:var(--alta)"></i>Alta</span>
+      <span><i class="dot" style="background:var(--media)"></i>Média</span>
+      <span class="mut">○ contorno tracejado = aguardando reforço</span>
+    </div>
+  </section>
+  <section class="card span4">
+    <h2>Alertas aos moradores</h2>
+    <div class="scroll" id="alertas"></div>
+  </section>
+
+  <section class="card span12">
+    <h2>Lista priorizada para limpeza</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>#</th><th>Boca de lobo</th><th>Endereço</th><th>Área</th><th>Obstrução</th><th>Score</th><th>Prioridade</th><th>Equipe</th><th>Status</th></tr></thead>
+      <tbody id="ordens"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card span12">
+    <h2>Histórico de execuções (auditoria)</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Execução</th><th>Status</th><th>Nível</th><th>Chuva 24h</th><th>Fonte</th><th>Lidos</th><th>Rejeitados</th><th>OS</th><th>Alertas</th></tr></thead>
+      <tbody id="hist"></tbody>
+    </table></div>
+  </section>
+</main>
+<script>
+const COR = {CRITICA:'#e5484d', ALTA:'#f5a524', MEDIA:'#e9d94a'};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let mapa, camada;
+function iniciarMapa(){
+  mapa = L.map('mapa').setView([-23.4935, -46.4264], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(mapa);
+  camada = L.layerGroup().addTo(mapa);
+}
+async function api(r){ const x = await fetch(r); if(!x.ok) throw new Error(r + ' ' + x.status); return x.json(); }
+async function carregar(){
+  try {
+    const [st, os, al, hist] = await Promise.all([api('/api/status'), api('/api/ordens'), api('/api/alertas'), api('/api/execucoes')]);
+    const nivel = st.status && st.status.startsWith('FALHA') ? st.status : (st.nivel || 'NORMAL');
+    document.getElementById('status').innerHTML = `
+      <span class="badge b-${esc(nivel)}">${esc(nivel)}</span>
+      <div><b>${st.chuva_24h_mm ?? '–'} mm</b> <span class="mut">previstos em 24h · pico ${st.pico_mm_h ?? '–'} mm/h · ${st.probabilidade_max_pct ?? '–'}%</span></div>
+      <div class="mut">Fonte: ${esc(st.fonte_previsao || '–')}</div>
+      <div class="mut">Execução ${esc(st.id)} · ${esc((st.inicio||'').replace('T',' '))} · ${esc(st.status)}</div>
+      <div style="flex-basis:100%" class="mut">${esc(st.justificativa || st.mensagem || '')}</div>`;
+    document.getElementById('k-os').textContent = os.length;
+    document.getElementById('k-crit').textContent = os.filter(o => o.prioridade === 'CRITICA').length;
+    document.getElementById('k-exc').textContent = os.filter(o => !o.equipe_id).length;
+    document.getElementById('k-al').textContent = al.length;
+
+    camada.clearLayers();
+    const pts = [];
+    os.forEach(o => {
+      const m = L.circleMarker([o.lat, o.lon], {radius: 6 + o.score/12, color: COR[o.prioridade], fillColor: COR[o.prioridade],
+        fillOpacity: .75, weight: 2, dashArray: o.equipe_id ? null : '4 3'}).addTo(camada);
+      m.bindPopup(`<b>${esc(o.id_bueiro)}</b> · ${esc(o.prioridade)}<br>${esc(o.endereco)}<br>${o.nivel_obstrucao}% obstruída (${esc(o.tipo_residuo)})<br>Equipe: ${esc(o.equipe_id || 'aguardando reforço')}`);
+      pts.push([o.lat, o.lon]);
+    });
+    mapa.invalidateSize();
+    if (pts.length) mapa.fitBounds(pts, {padding:[30,30], maxZoom:16});
+
+    document.getElementById('ordens').innerHTML = os.map(o => `<tr>
+      <td>${o.ordem}</td><td><b>${esc(o.id_bueiro)}</b><div class="mut">${esc(o.tipo)}</div></td>
+      <td>${esc(o.endereco)}${o.reinspecionar ? `<div class="mut">⚠ ${esc(o.observacao)}</div>` : ''}</td>
+      <td>${esc(o.area)}</td><td>${o.nivel_obstrucao}%<div class="mut">${esc(o.tipo_residuo)}</div></td><td>${o.score}</td>
+      <td class="p-${esc(o.prioridade)}"><b>${esc(o.prioridade)}</b></td><td>${esc(o.equipe_id || '—')}</td><td>${esc(o.status)}</td></tr>`).join('')
+      || '<tr><td colspan="9" class="mut">Nenhuma ordem de serviço nesta execução (chuva abaixo do limite ou falha).</td></tr>';
+
+    const porArea = {};
+    al.filter(a => a.publico === 'morador').forEach(a => { (porArea[a.area_id] ||= {msg:a.mensagem, ids:new Set()}).ids.add(a.destinatario_id); });
+    Object.values(porArea).forEach(v => v.n = v.ids.size);
+    const equipes = al.filter(a => a.publico === 'equipe_limpeza');
+    document.getElementById('alertas').innerHTML =
+      Object.entries(porArea).map(([k,v]) => `<div class="alerta"><b>${esc(k)}</b> <span class="tag">${v.n} morador(es)</span><br>${esc(v.msg)}</div>`).join('')
+      + equipes.map(e => `<div class="alerta" style="border-color:var(--blue)"><b style="color:var(--blue)">${esc(e.destino_mascarado)}</b><br>${esc(e.mensagem)}</div>`).join('')
+      || '<div class="mut">Nenhum alerta emitido.</div>';
+
+    document.getElementById('hist').innerHTML = hist.map(h => `<tr><td>${esc(h.id)}</td><td>${esc(h.status)}</td>
+      <td>${esc(h.nivel || '–')}</td><td>${h.chuva_24h_mm ?? '–'} mm</td><td>${esc(h.fonte_previsao || '–')}</td>
+      <td>${h.linhas_lidas}</td><td>${h.rejeitados}</td><td>${h.ordens_geradas}</td><td>${h.alertas_enviados}</td></tr>`).join('');
+  } catch (e) {
+    document.getElementById('status').innerHTML = `<span class="badge b-FALHA">SEM DADOS</span> <span class="mut">${esc(e.message)} — execute o bot: python src/main.py</span>`;
+  }
+}
+iniciarMapa(); carregar();
+</script>
+</body>
+</html>

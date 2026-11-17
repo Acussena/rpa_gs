@@ -1,0 +1,21 @@
+id_morador,nome,telefone,email,area_id,canal,consentimento_lgpd
+M-001,Ana Souza,(11) 92528-4872,ana1@exemplo.com,AR-01,sms,sim
+M-002,Bruno Lima,(11) 97658-8956,bruno2@exemplo.com,AR-02,whatsapp,sim
+M-003,Carla Dias,(11) 94502-7570,carla3@exemplo.com,AR-03,sms,sim
+M-004,Diego Rocha,(11) 93697-7209,diego4@exemplo.com,AR-04,sms,nao
+M-005,Elaine Prado,(11) 97396-5345,elaine5@exemplo.com,AR-05,whatsapp,sim
+M-006,Fábio Nunes,(11) 95673-7930,fabio6@exemplo.com,AR-01,email,sim
+M-007,Gisele Alves,(11) 98973-3536,gisele7@exemplo.com,AR-02,sms,sim
+M-008,Hugo Martins,(11) 95861-4566,hugo8@exemplo.com,AR-03,sms,sim
+M-009,Íris Campos,(11) 99883-1998,iris9@exemplo.com,AR-04,email,sim
+M-010,João Pereira,(11) 96138-1936,joão10@exemplo.com,AR-05,sms,sim
+M-011,Karina Melo,(11) 98811-9238,karina11@exemplo.com,AR-01,email,sim
+M-012,Luís Ferreira,(11) 93579-1931,luis12@exemplo.com,AR-02,email,sim
+M-013,Marta Gomes,(11) 92312-4044,marta13@exemplo.com,AR-03,sms,nao
+M-014,Nelson Reis,(11) 92113-4853,nelson14@exemplo.com,AR-04,whatsapp,sim
+M-015,Olívia Castro,(11) 92964-5033,olivia15@exemplo.com,AR-05,email,sim
+M-016,Paulo Teixeira,(11) 91651-2343,paulo16@exemplo.com,AR-01,whatsapp,sim
+M-017,Quitéria Moraes,(11) 99565-6183,quitéria17@exemplo.com,AR-02,whatsapp,sim
+M-018,Rafael Santos,(11) 94346-6147,rafael18@exemplo.com,AR-03,sms,sim
+M-019,Sônia Ribeiro,(11) 95351-7484,sonia19@exemplo.com,AR-04,sms,sim
+M-020,Tiago Barros,(11) 95915-8491,tiago20@exemplo.com,AR-05,whatsapp,sim

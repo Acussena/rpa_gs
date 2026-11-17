@@ -1,0 +1,46 @@
+{
+  "versao": "2026-11",
+  "fonte": "Cadastro fictício para o MVP CitizenTech",
+  "areas_risco": [
+    {
+      "id": "AR-01",
+      "nome": "Jardim Pantanal",
+      "nivel_risco": 3,
+      "alagamentos_ultimos_5_anos": 9,
+      "lat": -23.4945,
+      "lon": -46.429
+    },
+    {
+      "id": "AR-02",
+      "nome": "Vila Itaim",
+      "nivel_risco": 3,
+      "alagamentos_ultimos_5_anos": 7,
+      "lat": -23.5002,
+      "lon": -46.413
+    },
+    {
+      "id": "AR-03",
+      "nome": "Jardim Helena",
+      "nivel_risco": 2,
+      "alagamentos_ultimos_5_anos": 4,
+      "lat": -23.4918,
+      "lon": -46.4205
+    },
+    {
+      "id": "AR-04",
+      "nome": "Jardim Romano",
+      "nivel_risco": 3,
+      "alagamentos_ultimos_5_anos": 8,
+      "lat": -23.4878,
+      "lon": -46.404
+    },
+    {
+      "id": "AR-05",
+      "nome": "São Miguel (Centro)",
+      "nivel_risco": 1,
+      "alagamentos_ultimos_5_anos": 1,
+      "lat": -23.4985,
+      "lon": -46.444
+    }
+  ]
+}

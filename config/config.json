@@ -1,0 +1,48 @@
+{
+  "projeto": "CitizenTech - Boca de Lobo",
+  "regiao_monitorada": "Zona Leste de São Paulo - várzea do Rio Tietê",
+  "latitude": -23.4935,
+  "longitude": -46.4264,
+  "fuso_horario": "America/Sao_Paulo",
+
+  "api_previsao": {
+    "url": "https://api.open-meteo.com/v1/forecast",
+    "timeout_s": 10,
+    "tentativas": 3,
+    "backoff_s": 1
+  },
+  "cache_previsao_validade_horas": 24,
+
+  "limites_chuva": {
+    "atencao_mm_24h": 20,
+    "alerta_mm_24h": 50,
+    "intensidade_forte_mm_h": 10,
+    "probabilidade_minima_pct": 60
+  },
+
+  "score": {
+    "peso_obstrucao": 0.5,
+    "peso_risco_area": 0.3,
+    "peso_historico": 0.2
+  },
+  "faixas_prioridade": {
+    "CRITICA": 70,
+    "ALTA": 50,
+    "MEDIA": 30
+  },
+  "prioridades_por_nivel": {
+    "ATENCAO": ["CRITICA", "ALTA"],
+    "ALERTA": ["CRITICA", "ALTA", "MEDIA"]
+  },
+  "obstrucao_minima_para_os": 30,
+  "inspecao_validade_dias": 7,
+  "confianca_visao_minima": 0.6,
+
+  "equipes_limpeza": [
+    {"id": "EQ-01", "nome": "Equipe Leste 1", "capacidade": 5},
+    {"id": "EQ-02", "nome": "Equipe Leste 2", "capacidade": 5},
+    {"id": "EQ-03", "nome": "Equipe Leste 3", "capacidade": 5}
+  ],
+
+  "contatos_emergencia": "Defesa Civil 199 | Bombeiros 193"
+}

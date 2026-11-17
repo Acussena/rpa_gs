@@ -1,0 +1,206 @@
+{
+  "versao": "2026-11",
+  "fonte": "Cadastro fictício de bocas de lobo",
+  "bueiros": [
+    {
+      "id": "BL-001",
+      "endereco": "Rua das Garças, 664",
+      "area_id": "AR-01",
+      "tipo": "boca de lobo",
+      "lat": -23.497825,
+      "lon": -46.430575
+    },
+    {
+      "id": "BL-002",
+      "endereco": "Rua do Aguapé, 238",
+      "area_id": "AR-01",
+      "tipo": "boca de lobo",
+      "lat": -23.492845,
+      "lon": -46.427763
+    },
+    {
+      "id": "BL-003",
+      "endereco": "Travessa Beira-Rio, 923",
+      "area_id": "AR-01",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.497391,
+      "lon": -46.429547
+    },
+    {
+      "id": "BL-004",
+      "endereco": "Rua Taboa, 40",
+      "area_id": "AR-01",
+      "tipo": "boca de lobo",
+      "lat": -23.49647,
+      "lon": -46.428963
+    },
+    {
+      "id": "BL-005",
+      "endereco": "Rua Socó, 37",
+      "area_id": "AR-01",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.496608,
+      "lon": -46.427951
+    },
+    {
+      "id": "BL-006",
+      "endereco": "Rua Martim-Pescador, 568",
+      "area_id": "AR-01",
+      "tipo": "boca de lobo",
+      "lat": -23.496457,
+      "lon": -46.428375
+    },
+    {
+      "id": "BL-007",
+      "endereco": "Rua Córrego Verde, 838",
+      "area_id": "AR-02",
+      "tipo": "boca de lobo",
+      "lat": -23.498388,
+      "lon": -46.415382
+    },
+    {
+      "id": "BL-008",
+      "endereco": "Rua das Palmeiras, 442",
+      "area_id": "AR-02",
+      "tipo": "boca de lobo",
+      "lat": -23.501755,
+      "lon": -46.414993
+    },
+    {
+      "id": "BL-009",
+      "endereco": "Rua Itaim Baixo, 791",
+      "area_id": "AR-02",
+      "tipo": "boca de lobo",
+      "lat": -23.502985,
+      "lon": -46.413841
+    },
+    {
+      "id": "BL-010",
+      "endereco": "Rua Três Pontes, 377",
+      "area_id": "AR-02",
+      "tipo": "boca de lobo",
+      "lat": -23.499474,
+      "lon": -46.41085
+    },
+    {
+      "id": "BL-011",
+      "endereco": "Rua Piraquara, 757",
+      "area_id": "AR-02",
+      "tipo": "boca de lobo",
+      "lat": -23.499946,
+      "lon": -46.409688
+    },
+    {
+      "id": "BL-012",
+      "endereco": "Rua Jacarandá, 397",
+      "area_id": "AR-03",
+      "tipo": "boca de lobo",
+      "lat": -23.491436,
+      "lon": -46.418194
+    },
+    {
+      "id": "BL-013",
+      "endereco": "Rua dos Ipês, 643",
+      "area_id": "AR-03",
+      "tipo": "boca de lobo",
+      "lat": -23.491259,
+      "lon": -46.419068
+    },
+    {
+      "id": "BL-014",
+      "endereco": "Rua Helena Velha, 56",
+      "area_id": "AR-03",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.493705,
+      "lon": -46.421974
+    },
+    {
+      "id": "BL-015",
+      "endereco": "Rua Capim-Limão, 91",
+      "area_id": "AR-03",
+      "tipo": "boca de lobo",
+      "lat": -23.489235,
+      "lon": -46.421339
+    },
+    {
+      "id": "BL-016",
+      "endereco": "Rua Várzea Nova, 474",
+      "area_id": "AR-03",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.489461,
+      "lon": -46.422861
+    },
+    {
+      "id": "BL-017",
+      "endereco": "Rua Romano, 373",
+      "area_id": "AR-04",
+      "tipo": "boca de lobo",
+      "lat": -23.486609,
+      "lon": -46.402587
+    },
+    {
+      "id": "BL-018",
+      "endereco": "Rua das Lavadeiras, 709",
+      "area_id": "AR-04",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.4908,
+      "lon": -46.403055
+    },
+    {
+      "id": "BL-019",
+      "endereco": "Rua Vala Grande, 556",
+      "area_id": "AR-04",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.489586,
+      "lon": -46.404264
+    },
+    {
+      "id": "BL-020",
+      "endereco": "Rua Pedra Lisa, 286",
+      "area_id": "AR-04",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.486483,
+      "lon": -46.405963
+    },
+    {
+      "id": "BL-021",
+      "endereco": "Rua Ribeirinha, 342",
+      "area_id": "AR-04",
+      "tipo": "boca de lobo",
+      "lat": -23.489697,
+      "lon": -46.407275
+    },
+    {
+      "id": "BL-022",
+      "endereco": "Av. Central, 333",
+      "area_id": "AR-05",
+      "tipo": "boca de lobo",
+      "lat": -23.500126,
+      "lon": -46.446023
+    },
+    {
+      "id": "BL-023",
+      "endereco": "Rua do Comércio, 975",
+      "area_id": "AR-05",
+      "tipo": "sarjeta com grelha",
+      "lat": -23.495865,
+      "lon": -46.445297
+    },
+    {
+      "id": "BL-024",
+      "endereco": "Rua da Matriz, 681",
+      "area_id": "AR-05",
+      "tipo": "boca de lobo",
+      "lat": -23.499231,
+      "lon": -46.441098
+    },
+    {
+      "id": "BL-025",
+      "endereco": "Rua Nordestina, 479",
+      "area_id": "AR-05",
+      "tipo": "boca de lobo",
+      "lat": -23.500146,
+      "lon": -46.445774
+    }
+  ]
+}
