@@ -6,3 +6,4 @@ output/cache/
 aws/dist/
 aws/token_api.txt
 samconfig.toml
+.claude/

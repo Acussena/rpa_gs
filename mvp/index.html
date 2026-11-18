@@ -42,7 +42,7 @@
 <body>
 <header>
   <div class="brand"><div class="logo">🌧️</div>
-    <div><h1>CitizenTech · Boca de Lobo</h1><div class="sub">Painel do MVP — resultado do bot RPA de prevenção de alagamentos</div></div>
+    <div><h1>CitizenTech · Boca de Lobo</h1><div class="sub">Painel do MVP — resultado do bot RPA de prevenção de alagamentos</div><div class="sub" id="modo"></div></div>
   </div>
   <button onclick="carregar()">Atualizar</button>
 </header>
@@ -93,10 +93,24 @@ function iniciarMapa(){
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(mapa);
   camada = L.layerGroup().addTo(mapa);
 }
-async function api(r){ const x = await fetch(r); if(!x.ok) throw new Error(r + ' ' + x.status); return x.json(); }
+async function api(r){ const x = await fetch(r, {cache:'no-store'}); if(!x.ok) throw new Error(r + ' ' + x.status); return x.json(); }
+// Com a API local (py src/api.py) os dados vêm de /api/*. Publicado como site estático (GitHub Pages),
+// não há API: o painel lê os mesmos arquivos que o bot exporta em output/api/.
+async function dadosDaApi(){
+  return Promise.all([api('/api/status'), api('/api/ordens'), api('/api/alertas'), api('/api/execucoes')]);
+}
+async function dadosEstaticos(){
+  const [p, hist] = await Promise.all([api('../output/api/ultimo_resultado.json'),
+                                       api('../output/api/execucoes.json').catch(() => [])]);
+  return [p.execucao, p.ordens_servico || [], p.alertas || [], hist];
+}
 async function carregar(){
   try {
-    const [st, os, al, hist] = await Promise.all([api('/api/status'), api('/api/ordens'), api('/api/alertas'), api('/api/execucoes')]);
+    let dados, estatico = false;
+    try { dados = await dadosDaApi(); } catch (_) { dados = await dadosEstaticos(); estatico = true; }
+    const [st, os, al, hist] = dados;
+    document.getElementById('modo').textContent = estatico
+      ? 'Versão publicada: última execução do bot enviada ao repositório' : 'Ao vivo: API local';
     const nivel = st.status && st.status.startsWith('FALHA') ? st.status : (st.nivel || 'NORMAL');
     document.getElementById('status').innerHTML = `
       <span class="badge b-${esc(nivel)}">${esc(nivel)}</span>
