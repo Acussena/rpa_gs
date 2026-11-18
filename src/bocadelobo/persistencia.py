@@ -100,13 +100,15 @@ class Banco:
 
 
 def exportar_arquivos(pasta_api: Path, pasta_saida: Path, resumo: dict, ordens: list,
-                      alertas: list, sem_inspecao: list) -> dict:
-    """Gera os arquivos estruturados consumidos pelo MVP (dashboard / app do cidadão)."""
+                      alertas: list, sem_inspecao: list, historico: list | None = None) -> dict:
+    """Gera os arquivos estruturados consumidos pelo MVP (API local/AWS, dashboard, app do cidadão)."""
     pasta_api.mkdir(parents=True, exist_ok=True)
     pacote = {"execucao": resumo, "ordens_servico": ordens, "alertas": alertas,
               "bueiros_sem_inspecao": sem_inspecao}
     arq_json = pasta_api / "ultimo_resultado.json"
     arq_json.write_text(json.dumps(pacote, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    (pasta_api / "execucoes.json").write_text(
+        json.dumps(historico or [resumo], ensure_ascii=False, indent=2, default=str), encoding="utf-8")
     arq_csv = pasta_saida / f"ordens_servico_{resumo['id']}.csv"
     if ordens:
         with arq_csv.open("w", newline="", encoding="utf-8-sig") as f:

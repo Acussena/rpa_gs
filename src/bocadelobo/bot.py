@@ -47,7 +47,6 @@ def executar(base: Path, *, agora: datetime | None = None, simular_chuva: float 
         log.info("decisao", f"Nível {nivel}: {justificativa}")
         if nivel == regras.NORMAL:
             resumo.update(status="SEM_ACAO", mensagem="Chuva abaixo do limite - nenhuma ação necessária")
-            exportar_arquivos(caminhos.api_json, caminhos.saida, resumo, [], [], [])
             return _finalizar(resumo, banco, log, caminhos, OK)
 
         # 3. Fontes de dados
@@ -98,9 +97,7 @@ def executar(base: Path, *, agora: datetime | None = None, simular_chuva: float 
 
         status = "CONCLUIDO_COM_PENDENCIAS" if (excedentes or stats["falhas"] or insp.rejeitados) else "CONCLUIDO"
         resumo.update(status=status, mensagem=texto_op)
-        alertas_exec = banco.alertas(execucao_id)
-        exportar_arquivos(caminhos.api_json, caminhos.saida, resumo, ordens, alertas_exec, sem_inspecao)
-        return _finalizar(resumo, banco, log, caminhos, OK)
+        return _finalizar(resumo, banco, log, caminhos, OK, ordens=ordens, sem_inspecao=sem_inspecao)
 
     except PrevisaoIndisponivel as exc:
         return _falha(resumo, banco, log, caminhos, agora, "FALHA_PREVISAO", str(exc), ERRO_PREVISAO)
@@ -132,14 +129,20 @@ def _falha(resumo, banco, log, caminhos, agora, status, msg, codigo):
     return _finalizar(resumo, banco, log, caminhos, codigo)
 
 
-def _finalizar(resumo, banco, log, caminhos, codigo):
+def _finalizar(resumo, banco, log, caminhos, codigo, ordens=None, sem_inspecao=None):
     resumo["fim"] = datetime.now().isoformat(timespec="seconds")
     resumo["codigo_saida"] = codigo
     try:
+        historico, alertas = [resumo], []
         if banco:
             banco.salvar_execucao(resumo)
+            historico = banco.execucoes()
+            alertas = banco.alertas_do_dia(resumo["inicio"][:10])
+        # Arquivos estruturados consumidos pela API (local ou AWS) - gerados inclusive em caso de falha
+        exportar_arquivos(caminhos.api_json, caminhos.saida, resumo, ordens or [], alertas,
+                          sem_inspecao or [], historico)
     except Exception as exc:  # noqa: BLE001
-        log.erro("auditoria", f"Não foi possível gravar a execução no banco: {exc}")
+        log.erro("auditoria", f"Não foi possível gravar a execução: {exc}")
     campos = {k: resumo.get(k) for k in ("status", "nivel", "chuva_24h_mm", "linhas_lidas", "inspecoes_validas",
                                          "rejeitados", "duplicados", "ordens_geradas", "excedentes",
                                          "alertas_enviados", "alertas_ignorados", "falhas_envio")}

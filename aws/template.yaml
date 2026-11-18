@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: CitizenTech Boca de Lobo - bot RPA agendado + API REST (API Gateway + Lambda + S3)
+
+# Antes do deploy: python aws/empacotar.py   (gera aws/dist/lambda com o código)
+# Deploy:          sam deploy --guided --template-file aws/template.yaml
+
+Parameters:
+  RoleArn:
+    Type: String
+    Description: >-
+      ARN da role de execução das Lambdas. No AWS Academy (Learner Lab) use a LabRole:
+      arn:aws:iam::<ID_DA_CONTA>:role/LabRole
+  ApiToken:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Token exigido no cabeçalho x-api-key das rotas POST (vazio = sem proteção, não recomendado)
+
+Globals:
+  Function:
+    Runtime: python3.12
+    CodeUri: dist/lambda/
+    Role: !Ref RoleArn
+    MemorySize: 256
+    Environment:
+      Variables:
+        BUCKET: !Ref Dados
+        API_TOKEN: !Ref ApiToken
+        TZ: America/Sao_Paulo
+
+Resources:
+  Dados:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+
+  BotFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-bot"
+      Description: Bot RPA - previsão, decisão, priorização, alertas (todo dia 06:00)
+      Handler: lambda_function.handler_bot
+      Timeout: 120
+      Events:
+        Diario:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 9 * * ? *)      # 09:00 UTC = 06:00 em Brasília
+            Description: Execução diária do bot Boca de Lobo
+            Enabled: true
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-api"
+      Description: API REST do MVP (lê resultados do S3, recebe inspeções do carrinho)
+      Handler: lambda_function.handler_api
+      Timeout: 29
+      Events:
+        Raiz:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Api
+            Path: /
+            Method: GET
+        Rotas:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Api
+            Path: /{proxy+}
+            Method: ANY
+
+  Api:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins: ["*"]
+        AllowHeaders: ["content-type", "x-api-key"]
+        AllowMethods: ["GET", "POST", "OPTIONS"]
+
+Outputs:
+  ApiUrl:
+    Description: URL base da API (o dashboard abre na raiz)
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com"
+  BucketDados:
+    Description: Bucket S3 com dados, resultados e logs
+    Value: !Ref Dados
+  FuncaoBot:
+    Description: 'Lambda do bot (teste manual com {"simular_chuva": 75})'
+    Value: !Ref BotFunction

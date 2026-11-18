@@ -1,0 +1,165 @@
+openapi: 3.0.3
+info:
+  title: CitizenTech Boca de Lobo API
+  version: 1.0.0
+  description: >-
+    API do componente de Automação (RPA) do MVP CitizenTech. Expõe a lista priorizada de bocas de lobo para limpeza,
+    os alertas emitidos e o histórico de execuções do bot, e recebe as inspeções enviadas pelo carrinho (robô).
+    Mesmo contrato localmente (http://localhost:8000) e na AWS (API Gateway + Lambda).
+servers:
+  - url: http://localhost:8000
+    description: Local (python src/api.py)
+  - url: https://{apiId}.execute-api.{regiao}.amazonaws.com
+    description: AWS (saída ApiUrl do deploy)
+    variables:
+      apiId: {default: SEU-API-ID}
+      regiao: {default: us-east-1}
+components:
+  securitySchemes:
+    apiKey: {type: apiKey, in: header, name: x-api-key}
+  schemas:
+    Erro:
+      type: object
+      properties: {erro: {type: string}, detalhes: {type: array, items: {type: object}}}
+    Execucao:
+      type: object
+      properties:
+        id: {type: string, example: EX20261116T060000}
+        inicio: {type: string, format: date-time}
+        status: {type: string, enum: [CONCLUIDO, CONCLUIDO_COM_PENDENCIAS, SEM_ACAO, FALHA_PREVISAO, FALHA_DADOS, FALHA]}
+        nivel: {type: string, enum: [NORMAL, ATENCAO, ALERTA]}
+        justificativa: {type: string}
+        fonte_previsao: {type: string, example: open-meteo}
+        chuva_24h_mm: {type: number, example: 75}
+        pico_mm_h: {type: number}
+        probabilidade_max_pct: {type: number}
+        linhas_lidas: {type: integer}
+        inspecoes_validas: {type: integer}
+        rejeitados: {type: integer}
+        duplicados: {type: integer}
+        ordens_geradas: {type: integer}
+        excedentes: {type: integer}
+        alertas_enviados: {type: integer}
+        codigo_saida: {type: integer, description: "0 ok, 1 erro inesperado, 2 previsão indisponível, 3 dados indisponíveis"}
+    OrdemServico:
+      type: object
+      properties:
+        ordem: {type: integer, example: 1}
+        id_bueiro: {type: string, example: BL-001}
+        endereco: {type: string, example: "Rua das Garças, 664"}
+        area_id: {type: string, example: AR-01}
+        area: {type: string, example: Jardim Pantanal}
+        lat: {type: number}
+        lon: {type: number}
+        nivel_obstrucao: {type: number, example: 92}
+        tipo_residuo: {type: string, example: folhas}
+        score: {type: number, example: 94}
+        prioridade: {type: string, enum: [CRITICA, ALTA, MEDIA]}
+        equipe_id: {type: string, nullable: true, example: EQ-01}
+        status: {type: string, enum: [ABERTA, AGUARDANDO_REFORCO]}
+        reinspecionar: {type: boolean}
+        observacao: {type: string}
+    Alerta:
+      type: object
+      properties:
+        publico: {type: string, enum: [morador, equipe_limpeza]}
+        destinatario_id: {type: string, example: M-001}
+        destino_mascarado: {type: string, example: "(11) 9****-**72"}
+        canal: {type: string, example: whatsapp}
+        area_id: {type: string, nullable: true}
+        nivel: {type: string}
+        mensagem: {type: string}
+        criado_em: {type: string, format: date-time}
+    Inspecao:
+      type: object
+      required: [id_bueiro, data_hora_inspecao, nivel_obstrucao]
+      properties:
+        id_bueiro: {type: string, example: BL-001}
+        data_hora_inspecao: {type: string, example: "2026-11-18T05:40:00"}
+        nivel_obstrucao: {type: number, minimum: 0, maximum: 100, example: 88}
+        tipo_residuo: {type: string, example: folhas}
+        confianca_visao: {type: number, minimum: 0, maximum: 1, example: 0.93}
+        foto_ref: {type: string, example: img/BL-001_2026-11-18.jpg}
+paths:
+  /api/status:
+    get:
+      summary: Última execução do bot
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/Execucao"}}}}
+        "404": {description: Bot ainda não executado, content: {application/json: {schema: {$ref: "#/components/schemas/Erro"}}}}
+  /api/ordens:
+    get:
+      summary: Lista priorizada de bocas de lobo para limpeza (mais urgente primeiro)
+      parameters:
+        - {name: prioridade, in: query, schema: {type: string}, example: "CRITICA,ALTA"}
+        - {name: equipe, in: query, schema: {type: string}, example: EQ-01}
+        - {name: area, in: query, schema: {type: string}, example: AR-01}
+        - {name: status, in: query, schema: {type: string}, example: AGUARDANDO_REFORCO}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/OrdemServico"}}}}}
+  /api/ordens/{id_bueiro}:
+    get:
+      summary: Ordem de serviço de uma boca de lobo
+      parameters: [{name: id_bueiro, in: path, required: true, schema: {type: string}, example: BL-001}]
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/OrdemServico"}}}}
+        "404": {description: Não está na lista atual}
+  /api/alertas:
+    get:
+      summary: Alertas emitidos no dia (contatos mascarados)
+      parameters:
+        - {name: area, in: query, schema: {type: string}}
+        - {name: publico, in: query, schema: {type: string, enum: [morador, equipe_limpeza]}}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/Alerta"}}}}}
+  /api/alertas/publico:
+    get:
+      summary: Alerta vigente por área, sem dados pessoais (app do cidadão)
+      parameters: [{name: area, in: query, schema: {type: string}}]
+      responses:
+        "200": {description: OK}
+  /api/pendencias:
+    get:
+      summary: Bueiros sem inspeção, ordens aguardando reforço e a reinspecionar
+      responses: {"200": {description: OK}}
+  /api/execucoes:
+    get:
+      summary: Histórico de execuções (auditoria)
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/Execucao"}}}}}
+  /api/inspecoes:
+    post:
+      summary: Carrinho/robô envia o resultado da ronda de inspeção
+      description: Gravado em data/inspecoes/ e processado (validado, deduplicado) na próxima execução do bot.
+      security: [{apiKey: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inspecoes]
+              properties:
+                robo_id: {type: string, example: carrinho01}
+                inspecoes: {type: array, maxItems: 500, items: {$ref: "#/components/schemas/Inspecao"}}
+      responses:
+        "201": {description: Recebidas}
+        "400": {description: JSON inválido}
+        "401": {description: x-api-key ausente ou inválida}
+        "422": {description: Campos obrigatórios ausentes (nada é gravado)}
+  /api/executar:
+    post:
+      summary: Executa o bot agora (sob demanda / demonstração)
+      security: [{apiKey: []}]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                simular_chuva: {type: number, example: 75, description: "mm em 24h; omitido = previsão real"}
+                falhar_api: {type: boolean, example: false}
+      responses:
+        "200": {description: Execução concluída, content: {application/json: {schema: {$ref: "#/components/schemas/Execucao"}}}}
+        "401": {description: x-api-key ausente ou inválida}
+        "502": {description: Bot terminou em falha controlada (ver status)}

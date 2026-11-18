@@ -1,8 +1,8 @@
 $ python src/main.py --simular-chuva 5
-22:26:46 INFO    [inicio] Execução EX20261116T222646 iniciada
-22:26:46 INFO    [previsao] Modo simulação: 5.0 mm em 24h
-22:26:46 INFO    [decisao] Nível NORMAL: 5.0 mm em 24h abaixo do limite de 20 mm
-22:26:46 INFO    [fim] Execução EX20261116T222646 finalizada: SEM_ACAO (código 0)
+12:47:58 INFO    [inicio] Execução EX20261118T124758 iniciada
+12:47:58 INFO    [previsao] Modo simulação: 5.0 mm em 24h
+12:47:58 INFO    [decisao] Nível NORMAL: 5.0 mm em 24h abaixo do limite de 20 mm
+12:47:58 INFO    [fim] Execução EX20261118T124758 finalizada: SEM_ACAO (código 0)
 
 ==> SEM_ACAO | nível: NORMAL | OS: 0 | alertas: 0 | código de saída: 0
 exit=0

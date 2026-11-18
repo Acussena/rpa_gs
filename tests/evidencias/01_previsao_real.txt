@@ -1,8 +1,8 @@
 $ python src/main.py 
-22:26:35 INFO    [inicio] Execução EX20261116T222635 iniciada
-22:26:36 INFO    [previsao] Previsão obtida na tentativa 1/3
-22:26:36 INFO    [decisao] Nível NORMAL: 0.2 mm em 24h abaixo do limite de 20 mm
-22:26:36 INFO    [fim] Execução EX20261116T222635 finalizada: SEM_ACAO (código 0)
+12:47:45 INFO    [inicio] Execução EX20261118T124745 iniciada
+12:47:47 INFO    [previsao] Previsão obtida na tentativa 1/3
+12:47:47 INFO    [decisao] Nível NORMAL: 3.3 mm em 24h abaixo do limite de 20 mm
+12:47:47 INFO    [fim] Execução EX20261118T124745 finalizada: SEM_ACAO (código 0)
 
 ==> SEM_ACAO | nível: NORMAL | OS: 0 | alertas: 0 | código de saída: 0
 exit=0

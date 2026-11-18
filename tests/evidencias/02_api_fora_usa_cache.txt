@@ -1,12 +1,12 @@
 $ python src/main.py --falhar-api
-22:26:37 INFO    [inicio] Execução EX20261116T222637 iniciada
-22:26:37 WARNING [previsao] Tentativa 1/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
-22:26:38 WARNING [previsao] Tentativa 2/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
-22:26:40 WARNING [previsao] Tentativa 3/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
-22:26:40 WARNING [previsao] API indisponível após todas as tentativas - acionando contingência (cache)
-22:26:40 INFO    [previsao] Usando previsão em cache: cache (0.0h atrás)
-22:26:40 INFO    [decisao] Nível NORMAL: 0.2 mm em 24h abaixo do limite de 20 mm
-22:26:40 INFO    [fim] Execução EX20261116T222637 finalizada: SEM_ACAO (código 0)
+12:47:48 INFO    [inicio] Execução EX20261118T124748 iniciada
+12:47:48 WARNING [previsao] Tentativa 1/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+12:47:49 WARNING [previsao] Tentativa 2/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+12:47:51 WARNING [previsao] Tentativa 3/3 falhou: URLError: <urlopen error falha simulada (--falhar-api)>
+12:47:51 WARNING [previsao] API indisponível após todas as tentativas - acionando contingência (cache)
+12:47:51 INFO    [previsao] Usando previsão em cache: cache (0.0h atrás)
+12:47:51 INFO    [decisao] Nível NORMAL: 3.3 mm em 24h abaixo do limite de 20 mm
+12:47:51 INFO    [fim] Execução EX20261118T124748 finalizada: SEM_ACAO (código 0)
 
 ==> SEM_ACAO | nível: NORMAL | OS: 0 | alertas: 0 | código de saída: 0
 exit=0

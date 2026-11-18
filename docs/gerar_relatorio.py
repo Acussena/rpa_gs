@@ -171,14 +171,25 @@ excedentes, alertas enviados/ignorados e falhas. Telefones e e-mails nunca são 
 <h2 class="quebra">8. Integração com o MVP</h2>
 <table><tr><th>Via</th><th>Artefato</th><th>Consumidor</th></tr>
 <tr><td>Banco de dados</td><td><code>output/citizentech.db</code> — tabelas <code>execucoes</code>, <code>ordens_servico</code>, <code>alertas</code></td><td>Back-end CitizenTech</td></tr>
-<tr><td>API REST</td><td><code>GET /api/status</code>, <code>/api/ordens</code>, <code>/api/alertas</code>, <code>/api/alertas/publico</code>, <code>/api/execucoes</code></td><td>Dashboard e app do cidadão</td></tr>
 <tr><td>Arquivos estruturados</td><td><code>output/api/ultimo_resultado.json</code>, <code>output/ordens_servico_*.csv</code>, <code>output/outbox/*.jsonl</code></td><td>App das equipes, BI, gateway de SMS/WhatsApp</td></tr></table>
+<h3>API REST (contrato completo em <code>docs/openapi.yaml</code>)</h3>
+<table><tr><th>Rota</th><th>Função</th><th>Consumidor</th></tr>
+<tr><td><code>GET /api/status</code></td><td>Última execução: nível, chuva prevista, contadores</td><td>Dashboard</td></tr>
+<tr><td><code>GET /api/ordens</code> (<code>?prioridade=&amp;equipe=&amp;area=&amp;status=</code>)</td><td>Lista priorizada de bocas de lobo</td><td>App das equipes, dashboard</td></tr>
+<tr><td><code>GET /api/ordens/{{id_bueiro}}</code></td><td>Ordem de serviço de um bueiro</td><td>App das equipes</td></tr>
+<tr><td><code>GET /api/alertas/publico</code></td><td>Alerta vigente por área, sem dados pessoais</td><td>App do cidadão</td></tr>
+<tr><td><code>GET /api/alertas</code>, <code>/api/pendencias</code>, <code>/api/execucoes</code></td><td>Alertas (contatos mascarados), pendências, auditoria</td><td>Operação / Defesa Civil</td></tr>
+<tr><td><code>POST /api/inspecoes</code> 🔑</td><td>Recebe a ronda do carrinho (JSON) e grava em <code>data/inspecoes/</code></td><td>Carrinho / robô de inspeção</td></tr>
+<tr><td><code>POST /api/executar</code> 🔑</td><td>Executa o bot sob demanda (<code>{{"simular_chuva": 75}}</code>)</td><td>Operação</td></tr></table>
+<p>🔑 exige o cabeçalho <code>x-api-key</code> quando <code>API_TOKEN</code> está configurado. A lógica da API
+(<code>src/bocadelobo/api_core.py</code>) não depende do ambiente: roda localmente (<code>python src/api.py</code>) e já está
+preparada para AWS (API Gateway + Lambda + S3, pasta <code>aws/</code>).</p>
 <figure>{img("assets/dashboard_mvp.png")}<figcaption>Figura 2 — Dashboard do MVP consumindo a API do bot: nível, KPIs, mapa de prioridade, alertas, lista de limpeza e histórico.</figcaption></figure>
 <figure>{img("assets/api_ordens_json.png", "width:80%;display:block;margin:auto")}<figcaption>Figura 3 — Resposta da rota <code>GET /api/ordens</code>.</figcaption></figure>
 
 <h2 class="quebra">9. Testes realizados (sucesso, decisão e falha)</h2>
-<p>26 testes automatizados em <code>tests/test_bot.py</code> (<code>python -m unittest discover -s tests -v</code>) —
-<b>26/26 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
+<p>40 testes automatizados em <code>tests/test_bot.py</code> e <code>tests/test_api.py</code> (<code>python -m unittest discover -s tests -v</code>) —
+<b>40/40 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
 <code>tests/evidencias/</code>:</p>
 <table><tr><th>Tipo</th><th>Cenário</th><th>Resultado esperado</th><th>Obtido</th></tr>
 <tr><td>Sucesso</td><td>Simulação 75 mm</td><td>ALERTA, OS priorizadas, alertas, integração MVP</td><td>✔ 19 OS (11 críticas), 4 aguardando reforço, 17 alertas, JSON/banco gerados</td></tr>

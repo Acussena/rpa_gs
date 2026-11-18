@@ -66,8 +66,11 @@ class FormatoConsole(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         hora = datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
         etapa = getattr(record, "etapa", "geral")
-        cor = self.CORES.get(record.levelname, "")
-        return f"{hora} {cor}{record.levelname:<7}\033[0m [{etapa}] {higienizar(record.getMessage())}"
+        if sys.stdout.isatty():
+            cor, fim = self.CORES.get(record.levelname, ""), "\033[0m"
+        else:                                   # CloudWatch / arquivos: sem códigos de cor
+            cor = fim = ""
+        return f"{hora} {cor}{record.levelname:<7}{fim} [{etapa}] {higienizar(record.getMessage())}"
 
 
 class Auditoria:

@@ -71,7 +71,9 @@ ou no Camunda Modeler). Gerado por [`docs/gerar_bpmn.py`](docs/gerar_bpmn.py).
 | `src/bocadelobo/alertas.py` | Mensagens, idempotência, LGPD, webhook da operação |
 | `src/bocadelobo/persistencia.py` | SQLite + exportação JSON/CSV para o MVP |
 | `src/bocadelobo/log_utils.py` | Logs JSON de auditoria com mascaramento de dados pessoais |
-| `src/api.py` | API REST do MVP + serve o dashboard |
+| `src/bocadelobo/api_core.py` | Rotas, filtros, validação e autenticação da API (independe de onde roda) |
+| `src/api.py` | Servidor da API REST local + dashboard |
+| `src/aws_lambda.py` | A mesma API e o bot como funções AWS Lambda (S3 como armazenamento) — preparado, não publicado |
 
 **Tecnologias:** Python 3.9+ **somente biblioteca padrão** (sem `pip install`), SQLite, API Open-Meteo, Leaflet +
 OpenStreetMap no dashboard, GitHub Actions para agendamento. *Por quê Python e não UiPath/Power Automate?* O processo
@@ -129,12 +131,40 @@ O resultado é consumido pelos outros componentes por **três vias**:
 
 | Via | Onde | Quem consome |
 |---|---|---|
+| **API REST** | `python src/api.py` → `http://localhost:8000/api/...` (contrato em [`docs/openapi.yaml`](docs/openapi.yaml)) | dashboard, app do cidadão, app das equipes, carrinho |
 | Banco de dados | `output/citizentech.db` (tabelas `execucoes`, `ordens_servico`, `alertas`) | back-end do MVP |
-| API REST | `python src/api.py` → `GET /api/status`, `/api/ordens`, `/api/alertas`, `/api/alertas/publico`, `/api/execucoes` | dashboard, app do cidadão |
-| Arquivos estruturados | `output/api/ultimo_resultado.json`, `output/ordens_servico_<execucao>.csv` | app das equipes, BI |
+| Arquivos estruturados | `output/api/ultimo_resultado.json`, `output/api/execucoes.json`, `output/ordens_servico_<execucao>.csv` | BI, integrações em lote |
 
 O **dashboard** (`mvp/index.html`, servido em `/`) consome a API e mostra nível de risco, KPIs, mapa com as bocas de
 lobo por prioridade, lista para limpeza, alertas emitidos e histórico de execuções.
+
+### 🌐 API REST
+
+| Método | Rota | O que faz |
+|---|---|---|
+| GET | `/api/status` | Última execução do bot (nível, chuva prevista, contadores) |
+| GET | `/api/ordens` | Lista priorizada de bocas de lobo. Filtros: `?prioridade=CRITICA,ALTA&equipe=EQ-01&area=AR-01&status=ABERTA` |
+| GET | `/api/ordens/{id_bueiro}` | Ordem de serviço de um bueiro (ex.: `/api/ordens/BL-001`) |
+| GET | `/api/alertas` | Alertas do dia, com contatos mascarados (`?area=&publico=morador`) |
+| GET | `/api/alertas/publico` | Um alerta por área, **sem dados pessoais** — para o app do cidadão (`?area=AR-01`) |
+| GET | `/api/pendencias` | Bueiros sem inspeção, ordens aguardando reforço e a reinspecionar |
+| GET | `/api/execucoes` | Histórico de execuções (auditoria) |
+| POST | `/api/inspecoes` | **O carrinho envia a ronda de inspeção** (JSON) → vira CSV em `data/inspecoes/` |
+| POST | `/api/executar` | Roda o bot agora: `{"simular_chuva": 75}` |
+
+As rotas **POST** exigem o cabeçalho `x-api-key` quando a variável `API_TOKEN` está definida. Erros seguem HTTP:
+`400` JSON inválido, `401` sem token, `404` rota/recurso inexistente, `422` inspeção sem campos obrigatórios (nada é
+gravado), `502` o bot terminou em falha controlada.
+
+```bash
+curl "http://localhost:8000/api/ordens?prioridade=CRITICA&equipe=EQ-01"
+curl -X POST http://localhost:8000/api/inspecoes -H "Content-Type: application/json" \
+  -d '{"robo_id":"carrinho01","inspecoes":[{"id_bueiro":"BL-024","data_hora_inspecao":"2026-11-18T05:40:00","nivel_obstrucao":90}]}'
+curl -X POST http://localhost:8000/api/executar -d '{"simular_chuva": 75}'
+```
+
+A lógica da API fica em `src/bocadelobo/api_core.py` e não depende de onde roda. A pasta [`aws/`](aws/) já traz a
+versão para **AWS (API Gateway + Lambda + S3)**, com o mesmo código, pronta para quando a integração for feita.
 
 ## ▶️ Como executar
 
@@ -146,7 +176,7 @@ python src/main.py --simular-chuva 75   # cenário de chuva forte (ALERTA)
 python src/main.py --simular-chuva 30   # cenário ATENÇÃO
 python src/main.py --simular-chuva 5    # cenário sem ação
 python src/main.py --falhar-api         # simula API fora do ar (cache ou falha controlada)
-python src/api.py                       # API + dashboard em http://localhost:8000
+python src/api.py                       # API REST + dashboard em http://localhost:8000
 python -m unittest discover -s tests -v # testes automatizados
 ```
 
@@ -159,12 +189,12 @@ ou Agendador do Windows ([`scripts/agendar_windows.ps1`](scripts/agendar_windows
 
 ## ✅ Testes
 
-26 testes automatizados (`tests/test_bot.py`) cobrindo **sucesso, decisão e falha**; evidências em
+40 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS) cobrindo **sucesso, decisão e falha**; evidências em
 [`tests/evidencias/`](tests/evidencias/):
 
 | Evidência | Cenário | Resultado |
 |---|---|---|
-| `00_testes_automatizados.txt` | suíte completa | 26/26 OK |
+| `00_testes_automatizados.txt` | suíte completa | 40/40 OK |
 | `01_previsao_real.txt` | API real | previsão obtida, decisão tomada |
 | `02_api_fora_usa_cache.txt` | falha — API fora | 3 tentativas → usa cache |
 | `03_falha_api_sem_cache.txt` | falha — API fora sem cache | `FALHA_PREVISAO`, código 2, operação notificada |
@@ -196,6 +226,7 @@ ou Agendador do Windows ([`scripts/agendar_windows.ps1`](scripts/agendar_windows
 ├── logs/                       # amostra de logs gerados (sem dados sensíveis)
 ├── output/                     # saídas da última demonstração (banco, JSON, CSV, outbox, quarentena)
 ├── tests/                      # testes automatizados + evidências
+├── aws/                        # versão AWS pronta (SAM: Lambda + API Gateway + S3) — ainda não publicada
 ├── scripts/agendar_windows.ps1
 └── .github/workflows/bot-diario.yml
 ```

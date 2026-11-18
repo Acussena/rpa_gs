@@ -1,48 +1,48 @@
 $ python src/main.py --simular-chuva 75
-22:26:51 INFO    [inicio] Execução EX20261116T222651 iniciada
-22:26:51 INFO    [previsao] Modo simulação: 75.0 mm em 24h
-22:26:51 INFO    [decisao] Nível ALERTA: 75.0 mm em 24h >= 50 mm (alerta)
-22:26:51 ERROR   [leitura] Arquivo 2026-11-16_inspecao_robo_drone2.csv ignorado - colunas ausentes ['confianca_visao', 'data_hora_inspecao', 'foto_ref', 'id_bueiro', 'nivel_obstrucao', 'tipo_residuo']
-22:26:51 INFO    [leitura] 2 arquivo(s) lido(s), 44 linha(s), 23 bueiro(s) com inspeção válida, 7 rejeição(ões), 2 duplicidade(s)
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:23 (BL-001) - linha duplicada
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:24 (BL-002) - bueiro repetido no mesmo lote (mantida a mais recente)
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:25 (BL-006) - nivel_obstrucao fora de 0-100: 150
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:26 (BL-999) - bueiro não cadastrado (dado inconsistente)
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:27 (BL-010) - data_hora_inspecao inválida: '16/11/2026 08h'
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:28 (BL-011) - data_hora_inspecao no futuro (dado inconsistente)
-22:26:51 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:29 (BL-012) - nivel_obstrucao vazio
-22:26:51 INFO    [leitura] 20 morador(es) inscrito(s) carregado(s)
-22:26:51 INFO    [priorizacao] BL-001 obstr=92% área=Jardim Pantanal score=94.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-002 obstr=85% área=Jardim Pantanal score=90.5 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-003 obstr=40% área=Jardim Pantanal score=68.0 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-004 obstr=78% área=Jardim Pantanal score=87.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-005 obstr=15% área=Jardim Pantanal score=55.5 -> ALTA | sem necessidade (obstrução baixa)
-22:26:51 INFO    [priorizacao] BL-006 obstr=66% área=Jardim Pantanal score=81.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-007 obstr=88% área=Vila Itaim score=88.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-008 obstr=52% área=Vila Itaim score=70.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-009 obstr=30% área=Vila Itaim score=59.0 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-010 obstr=71% área=Vila Itaim score=79.5 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-011 obstr=20% área=Vila Itaim score=54.0 -> ALTA | sem necessidade (obstrução baixa)
-22:26:51 INFO    [priorizacao] BL-012 obstr=45% área=Jardim Helena score=50.5 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-013 obstr=60% área=Jardim Helena score=58.0 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-014 obstr=12% área=Jardim Helena score=34.0 -> MEDIA | sem necessidade (obstrução baixa)
-22:26:51 INFO    [priorizacao] BL-015 obstr=35% área=Jardim Helena score=45.5 -> MEDIA | incluído
-22:26:51 INFO    [priorizacao] BL-016 obstr=50% área=Jardim Helena score=53.0 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-017 obstr=95% área=Jardim Romano score=93.5 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-018 obstr=74% área=Jardim Romano score=83.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-019 obstr=38% área=Jardim Romano score=65.0 -> ALTA | incluído
-22:26:51 INFO    [priorizacao] BL-020 obstr=81% área=Jardim Romano score=86.5 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-021 obstr=64% área=Jardim Romano score=78.0 -> CRITICA | incluído
-22:26:51 INFO    [priorizacao] BL-022 obstr=55% área=São Miguel (Centro) score=39.5 -> MEDIA | incluído
-22:26:51 INFO    [priorizacao] BL-023 obstr=35% área=São Miguel (Centro) score=29.5 -> BAIXA | fora do corte para nível ALERTA
-22:26:51 INFO    [priorizacao] 19 ordem(ns) de serviço: 11 crítica(s), 6 alta(s), 2 média(s)
-22:26:51 WARNING [priorizacao] Capacidade das equipes esgotada: 4 bueiro(s) aguardando reforço: BL-016, BL-012, BL-015, BL-022
-22:26:51 WARNING [priorizacao] 2 bueiro(s) sem inspeção válida - solicitar nova ronda do robô: BL-024, BL-025
-22:26:51 INFO    [alertas] Áreas que receberão alerta: Jardim Pantanal, Vila Itaim, Jardim Helena, Jardim Romano
-22:26:51 INFO    [alertas] 2 morador(es) sem consentimento LGPD não serão notificados
-22:26:51 INFO    [alertas] 0 alerta(s) enviado(s), 17 já enviado(s) hoje (idempotência), 0 falha(s)
-22:26:51 INFO    [notificacao] Resumo registrado no canal da operação (webhook não configurado)
-22:26:51 INFO    [fim] Execução EX20261116T222651 finalizada: CONCLUIDO_COM_PENDENCIAS (código 0)
+12:48:03 INFO    [inicio] Execução EX20261118T124803 iniciada
+12:48:03 INFO    [previsao] Modo simulação: 75.0 mm em 24h
+12:48:03 INFO    [decisao] Nível ALERTA: 75.0 mm em 24h >= 50 mm (alerta)
+12:48:03 ERROR   [leitura] Arquivo 2026-11-16_inspecao_robo_drone2.csv ignorado - colunas ausentes ['confianca_visao', 'data_hora_inspecao', 'foto_ref', 'id_bueiro', 'nivel_obstrucao', 'tipo_residuo']
+12:48:03 INFO    [leitura] 2 arquivo(s) lido(s), 44 linha(s), 23 bueiro(s) com inspeção válida, 7 rejeição(ões), 2 duplicidade(s)
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:23 (BL-001) - linha duplicada
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:24 (BL-002) - bueiro repetido no mesmo lote (mantida a mais recente)
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:25 (BL-006) - nivel_obstrucao fora de 0-100: 150
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:26 (BL-999) - bueiro não cadastrado (dado inconsistente)
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:27 (BL-010) - data_hora_inspecao inválida: '16/11/2026 08h'
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:28 (BL-011) - data_hora_inspecao no futuro (dado inconsistente)
+12:48:03 WARNING [validacao] Registro rejeitado 2026-11-16_inspecao_robo.csv:29 (BL-012) - nivel_obstrucao vazio
+12:48:03 INFO    [leitura] 20 morador(es) inscrito(s) carregado(s)
+12:48:03 INFO    [priorizacao] BL-001 obstr=92% área=Jardim Pantanal score=94.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-002 obstr=85% área=Jardim Pantanal score=90.5 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-003 obstr=40% área=Jardim Pantanal score=68.0 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-004 obstr=78% área=Jardim Pantanal score=87.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-005 obstr=15% área=Jardim Pantanal score=55.5 -> ALTA | sem necessidade (obstrução baixa)
+12:48:03 INFO    [priorizacao] BL-006 obstr=66% área=Jardim Pantanal score=81.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-007 obstr=88% área=Vila Itaim score=88.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-008 obstr=52% área=Vila Itaim score=70.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-009 obstr=30% área=Vila Itaim score=59.0 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-010 obstr=71% área=Vila Itaim score=79.5 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-011 obstr=20% área=Vila Itaim score=54.0 -> ALTA | sem necessidade (obstrução baixa)
+12:48:03 INFO    [priorizacao] BL-012 obstr=45% área=Jardim Helena score=50.5 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-013 obstr=60% área=Jardim Helena score=58.0 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-014 obstr=12% área=Jardim Helena score=34.0 -> MEDIA | sem necessidade (obstrução baixa)
+12:48:03 INFO    [priorizacao] BL-015 obstr=35% área=Jardim Helena score=45.5 -> MEDIA | incluído
+12:48:03 INFO    [priorizacao] BL-016 obstr=50% área=Jardim Helena score=53.0 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-017 obstr=95% área=Jardim Romano score=93.5 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-018 obstr=74% área=Jardim Romano score=83.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-019 obstr=38% área=Jardim Romano score=65.0 -> ALTA | incluído
+12:48:03 INFO    [priorizacao] BL-020 obstr=81% área=Jardim Romano score=86.5 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-021 obstr=64% área=Jardim Romano score=78.0 -> CRITICA | incluído
+12:48:03 INFO    [priorizacao] BL-022 obstr=55% área=São Miguel (Centro) score=39.5 -> MEDIA | incluído
+12:48:03 INFO    [priorizacao] BL-023 obstr=35% área=São Miguel (Centro) score=29.5 -> BAIXA | fora do corte para nível ALERTA
+12:48:03 INFO    [priorizacao] 19 ordem(ns) de serviço: 11 crítica(s), 6 alta(s), 2 média(s)
+12:48:03 WARNING [priorizacao] Capacidade das equipes esgotada: 4 bueiro(s) aguardando reforço: BL-016, BL-012, BL-015, BL-022
+12:48:03 WARNING [priorizacao] 2 bueiro(s) sem inspeção válida - solicitar nova ronda do robô: BL-024, BL-025
+12:48:03 INFO    [alertas] Áreas que receberão alerta: Jardim Pantanal, Vila Itaim, Jardim Helena, Jardim Romano
+12:48:03 INFO    [alertas] 2 morador(es) sem consentimento LGPD não serão notificados
+12:48:03 INFO    [alertas] 0 alerta(s) enviado(s), 17 já enviado(s) hoje (idempotência), 0 falha(s)
+12:48:03 INFO    [notificacao] Resumo registrado no canal da operação (webhook não configurado)
+12:48:03 INFO    [fim] Execução EX20261118T124803 finalizada: CONCLUIDO_COM_PENDENCIAS (código 0)
 
 ==> CONCLUIDO_COM_PENDENCIAS | nível: ALERTA | OS: 19 | alertas: 0 | código de saída: 0
 exit=0
