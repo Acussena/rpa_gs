@@ -38,8 +38,14 @@ test_pancada_forte_com_probabilidade_baixa_nao_aciona (test_bot.TestRegrasDeDeci
 test_score_e_prioridade (test_bot.TestRegrasDeDecisao) ... ok
 test_linha_valida (test_bot.TestValidacao) ... ok
 test_rejeicoes (test_bot.TestValidacao) ... ok
+test_bot_nao_cai_se_publicacao_falhar (test_publicacao.TestPublicacaoS3) ... ok
+test_desligado_por_config_ou_variavel (test_publicacao.TestPublicacaoS3) ... ok
+test_envia_um_arquivo_bocaLobo_data_hora_na_pasta_rpa (test_publicacao.TestPublicacaoS3) ... ok
+test_falha_persistente_e_reportada (test_publicacao.TestPublicacaoS3) ... ok
+test_integridade_conferida (test_publicacao.TestPublicacaoS3) ... ok
+test_retentativa_ate_conseguir (test_publicacao.TestPublicacaoS3) ... ok
 
 ----------------------------------------------------------------------
-Ran 40 tests in 3.609s
+Ran 46 tests in 3.520s
 
 OK

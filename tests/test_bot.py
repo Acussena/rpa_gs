@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import sqlite3
 import sys
@@ -25,6 +26,8 @@ from bocadelobo.dados import validar_linha  # noqa: E402
 from bocadelobo.log_utils import higienizar, mascarar_email, mascarar_nome, mascarar_telefone  # noqa: E402
 from bocadelobo.previsao import (Previsao, PrevisaoIndisponivel, RespostaInvalida,  # noqa: E402
                                  buscar_previsao, interpretar_resposta)
+
+os.environ["PUBLICAR_S3"] = "0"          # testes nunca enviam nada para a AWS real
 
 AGORA = datetime(2026, 11, 16, 10, 0, 0)   # data de referência fixa -> testes determinísticos
 CFG = json.loads((RAIZ / "config" / "config.json").read_text(encoding="utf-8"))

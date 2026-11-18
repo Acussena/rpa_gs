@@ -3,33 +3,61 @@ Transform: AWS::Serverless-2016-10-31
 Description: CitizenTech Boca de Lobo - bot RPA agendado + API REST (API Gateway + Lambda + S3)
 
 # Antes do deploy: python aws/empacotar.py   (gera aws/dist/lambda com o código)
-# Deploy:          sam deploy --guided --template-file aws/template.yaml
+# Deploy:          sam deploy --guided --template-file aws/template.yaml --capabilities CAPABILITY_IAM
 
 Parameters:
   RoleArn:
     Type: String
+    Default: ""
     Description: >-
-      ARN da role de execução das Lambdas. No AWS Academy (Learner Lab) use a LabRole:
-      arn:aws:iam::<ID_DA_CONTA>:role/LabRole
+      Vazio = o template cria a role (conta própria). No AWS Academy (Learner Lab), que não permite criar roles,
+      informe a LabRole: arn:aws:iam::<ID_DA_CONTA>:role/LabRole
   ApiToken:
     Type: String
     NoEcho: true
     Default: ""
     Description: Token exigido no cabeçalho x-api-key das rotas POST (vazio = sem proteção, não recomendado)
 
+Conditions:
+  CriarRole: !Equals [!Ref RoleArn, ""]
+
 Globals:
   Function:
     Runtime: python3.12
     CodeUri: dist/lambda/
-    Role: !Ref RoleArn
     MemorySize: 256
     Environment:
       Variables:
         BUCKET: !Ref Dados
         API_TOKEN: !Ref ApiToken
         TZ: America/Sao_Paulo
+        PUBLICAR_S3: "0"                 # na AWS o resultado já fica no bucket da stack
 
 Resources:
+  RoleLambda:
+    Type: AWS::IAM::Role
+    Condition: CriarRole
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: {Service: lambda.amazonaws.com}
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: acesso-bucket-boca-de-lobo        # mínimo privilégio: só este bucket
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject]
+                Resource: !Sub "${Dados.Arn}/*"
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt Dados.Arn
+
   Dados:
     Type: AWS::S3::Bucket
     Properties:
@@ -51,6 +79,7 @@ Resources:
       FunctionName: !Sub "${AWS::StackName}-bot"
       Description: Bot RPA - previsão, decisão, priorização, alertas (todo dia 06:00)
       Handler: lambda_function.handler_bot
+      Role: !If [CriarRole, !GetAtt RoleLambda.Arn, !Ref RoleArn]
       Timeout: 120
       Events:
         Diario:
@@ -66,6 +95,7 @@ Resources:
       FunctionName: !Sub "${AWS::StackName}-api"
       Description: API REST do MVP (lê resultados do S3, recebe inspeções do carrinho)
       Handler: lambda_function.handler_api
+      Role: !If [CriarRole, !GetAtt RoleLambda.Arn, !Ref RoleArn]
       Timeout: 29
       Events:
         Raiz:

@@ -188,8 +188,8 @@ preparada para AWS (API Gateway + Lambda + S3, pasta <code>aws/</code>).</p>
 <figure>{img("assets/api_ordens_json.png", "width:80%;display:block;margin:auto")}<figcaption>Figura 3 — Resposta da rota <code>GET /api/ordens</code>.</figcaption></figure>
 
 <h2 class="quebra">9. Testes realizados (sucesso, decisão e falha)</h2>
-<p>40 testes automatizados em <code>tests/test_bot.py</code> e <code>tests/test_api.py</code> (<code>python -m unittest discover -s tests -v</code>) —
-<b>40/40 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
+<p>46 testes automatizados em <code>tests/test_bot.py</code> e <code>tests/test_api.py</code> e <code>tests/test_publicacao.py</code> (<code>python -m unittest discover -s tests -v</code>) —
+<b>46/46 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
 <code>tests/evidencias/</code>:</p>
 <table><tr><th>Tipo</th><th>Cenário</th><th>Resultado esperado</th><th>Obtido</th></tr>
 <tr><td>Sucesso</td><td>Simulação 75 mm</td><td>ALERTA, OS priorizadas, alertas, integração MVP</td><td>✔ 19 OS (11 críticas), 4 aguardando reforço, 17 alertas, JSON/banco gerados</td></tr>

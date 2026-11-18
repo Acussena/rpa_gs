@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import csv
+import json
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -11,6 +13,7 @@ from .config import Caminhos, ConfiguracaoInvalida, carregar_config
 from .log_utils import Auditoria
 from .persistencia import Banco, exportar_arquivos
 from .previsao import PrevisaoIndisponivel, buscar_previsao
+from .publicacao import publicar
 
 # Códigos de saída (permitem ao agendador detectar falhas - nada de falha silenciosa)
 OK, ERRO_INESPERADO, ERRO_PREVISAO, ERRO_DADOS = 0, 1, 2, 3
@@ -47,7 +50,7 @@ def executar(base: Path, *, agora: datetime | None = None, simular_chuva: float 
         log.info("decisao", f"Nível {nivel}: {justificativa}")
         if nivel == regras.NORMAL:
             resumo.update(status="SEM_ACAO", mensagem="Chuva abaixo do limite - nenhuma ação necessária")
-            return _finalizar(resumo, banco, log, caminhos, OK)
+            return _finalizar(resumo, banco, log, caminhos, OK, dormir=dormir)
 
         # 3. Fontes de dados
         areas = dados.carregar_areas(caminhos)
@@ -97,12 +100,13 @@ def executar(base: Path, *, agora: datetime | None = None, simular_chuva: float 
 
         status = "CONCLUIDO_COM_PENDENCIAS" if (excedentes or stats["falhas"] or insp.rejeitados) else "CONCLUIDO"
         resumo.update(status=status, mensagem=texto_op)
-        return _finalizar(resumo, banco, log, caminhos, OK, ordens=ordens, sem_inspecao=sem_inspecao)
+        return _finalizar(resumo, banco, log, caminhos, OK, ordens=ordens, sem_inspecao=sem_inspecao,
+                          dormir=dormir)
 
     except PrevisaoIndisponivel as exc:
-        return _falha(resumo, banco, log, caminhos, agora, "FALHA_PREVISAO", str(exc), ERRO_PREVISAO)
+        return _falha(resumo, banco, log, caminhos, agora, "FALHA_PREVISAO", str(exc), ERRO_PREVISAO, dormir)
     except (dados.DadosIndisponiveis, ConfiguracaoInvalida) as exc:
-        return _falha(resumo, banco, log, caminhos, agora, "FALHA_DADOS", str(exc), ERRO_DADOS)
+        return _falha(resumo, banco, log, caminhos, agora, "FALHA_DADOS", str(exc), ERRO_DADOS, dormir)
     except Exception as exc:  # noqa: BLE001 - última barreira: registra e devolve código de erro
         log.erro("erro", f"Erro inesperado: {type(exc).__name__}: {exc}", exc=True)
         return _falha(resumo, banco, log, caminhos, agora, "FALHA", f"{type(exc).__name__}: {exc}",
@@ -121,15 +125,15 @@ def _gravar_quarentena(caminhos: Caminhos, execucao_id: str, insp) -> None:
         w.writerows(itens)
 
 
-def _falha(resumo, banco, log, caminhos, agora, status, msg, codigo):
+def _falha(resumo, banco, log, caminhos, agora, status, msg, codigo, dormir=None):
     resumo.update(status=status, mensagem=msg)
     log.erro("falha", f"Execução interrompida de forma controlada: {msg}")
     al.notificar_operacao(f"[Boca de Lobo] FALHA ({status}): {msg} - verificação manual necessária.",
                           log, caminhos.outbox, agora)
-    return _finalizar(resumo, banco, log, caminhos, codigo)
+    return _finalizar(resumo, banco, log, caminhos, codigo, dormir=dormir)
 
 
-def _finalizar(resumo, banco, log, caminhos, codigo, ordens=None, sem_inspecao=None):
+def _finalizar(resumo, banco, log, caminhos, codigo, ordens=None, sem_inspecao=None, dormir=None):
     resumo["fim"] = datetime.now().isoformat(timespec="seconds")
     resumo["codigo_saida"] = codigo
     try:
@@ -143,9 +147,24 @@ def _finalizar(resumo, banco, log, caminhos, codigo, ordens=None, sem_inspecao=N
                           sem_inspecao or [], historico)
     except Exception as exc:  # noqa: BLE001
         log.erro("auditoria", f"Não foi possível gravar a execução: {exc}")
+
+    # Publicação no S3 (ingestão do MVP) - falha aqui não derruba o bot, mas é registrada e avisada
+    try:
+        cfg_pub = json.loads(caminhos.config.read_text(encoding="utf-8")).get("publicacao_s3")
+    except (OSError, ValueError):
+        cfg_pub = None
+    pub = publicar(cfg_pub, caminhos.api_json, log, carimbo=datetime.fromisoformat(resumo["inicio"]),
+                   dormir=dormir or time.sleep)
+    resumo["publicacao_s3"] = pub["status"]
+    if pub["status"] == "FALHA":
+        resumo["falhas_envio"] = resumo.get("falhas_envio", 0) + 1
+        al.notificar_operacao(f"[Boca de Lobo] Falha ao publicar o resultado no S3: {pub.get('erro')}",
+                              log, caminhos.outbox, datetime.fromisoformat(resumo["inicio"]))
+
     campos = {k: resumo.get(k) for k in ("status", "nivel", "chuva_24h_mm", "linhas_lidas", "inspecoes_validas",
                                          "rejeitados", "duplicados", "ordens_geradas", "excedentes",
-                                         "alertas_enviados", "alertas_ignorados", "falhas_envio")}
+                                         "alertas_enviados", "alertas_ignorados", "falhas_envio",
+                                         "publicacao_s3")}
     log.info("fim", f"Execução {resumo['id']} finalizada: {resumo['status']} (código {codigo})", campos)
     log.fechar()
     return resumo

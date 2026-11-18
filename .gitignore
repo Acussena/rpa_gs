@@ -4,3 +4,5 @@ __pycache__/
 output/cache/
 .env
 aws/dist/
+aws/token_api.txt
+samconfig.toml

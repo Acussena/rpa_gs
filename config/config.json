@@ -44,5 +44,13 @@
     {"id": "EQ-03", "nome": "Equipe Leste 3", "capacidade": 5}
   ],
 
-  "contatos_emergencia": "Defesa Civil 199 | Bombeiros 193"
+  "contatos_emergencia": "Defesa Civil 199 | Bombeiros 193",
+
+  "publicacao_s3": {
+    "ativo": true,
+    "bucket": "boca-lobo-s3-ingestao",
+    "prefixo": "rpa/",
+    "regiao": "us-east-1",
+    "tentativas": 3
+  }
 }

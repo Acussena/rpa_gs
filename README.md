@@ -166,6 +166,30 @@ curl -X POST http://localhost:8000/api/executar -d '{"simular_chuva": 75}'
 A lógica da API fica em `src/bocadelobo/api_core.py` e não depende de onde roda. A pasta [`aws/`](aws/) já traz a
 versão para **AWS (API Gateway + Lambda + S3)**, com o mesmo código, pronta para quando a integração for feita.
 
+### ☁️ Publicação automática no Amazon S3
+
+Ao fim de **cada execução**, o bot junta o resultado e o histórico num único arquivo e o envia ao bucket de ingestão
+do MVP:
+
+```
+s3://boca-lobo-s3-ingestao/rpa/bocaLobo_AAAAMMDD_HHMMSS.json      (data e hora do início da execução)
+```
+
+| Campo do arquivo | Conteúdo |
+|---|---|
+| `execucao` | Resumo da execução: nível, chuva prevista, contadores, status |
+| `ordens_servico` | Lista priorizada de bocas de lobo para limpeza |
+| `alertas` | Alertas do dia (contatos mascarados) |
+| `bueiros_sem_inspecao` | Bueiros que precisam de nova ronda do carrinho |
+| `historico_execucoes` | Todas as execuções registradas (auditoria) |
+
+* Configuração em `config/config.json → publicacao_s3` (bucket, pasta, região). Desligar sem editar: `PUBLICAR_S3=0`.
+* Credenciais **nunca** no código: o bot usa as do ambiente (`aws configure` ou variáveis `AWS_ACCESS_KEY_ID` /
+  `AWS_SECRET_ACCESS_KEY`). Basta a permissão `s3:PutObject` em `boca-lobo-s3-ingestao/rpa/*`.
+* 3 tentativas com espera crescente e conferência de integridade (ETag do S3 = MD5 do arquivo).
+* Se o envio falhar, o bot **não para**: registra no log, marca `publicacao_s3 = FALHA` no resumo e avisa a operação.
+* Cópia local de cada arquivo enviado em `output/publicado/`.
+
 ## ▶️ Como executar
 
 Requisito: **Python 3.9+** (nenhuma dependência externa).
@@ -189,12 +213,12 @@ ou Agendador do Windows ([`scripts/agendar_windows.ps1`](scripts/agendar_windows
 
 ## ✅ Testes
 
-40 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS) cobrindo **sucesso, decisão e falha**; evidências em
+46 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS; `tests/test_publicacao.py` — envio ao S3) cobrindo **sucesso, decisão e falha**; evidências em
 [`tests/evidencias/`](tests/evidencias/):
 
 | Evidência | Cenário | Resultado |
 |---|---|---|
-| `00_testes_automatizados.txt` | suíte completa | 40/40 OK |
+| `00_testes_automatizados.txt` | suíte completa | 46/46 OK |
 | `01_previsao_real.txt` | API real | previsão obtida, decisão tomada |
 | `02_api_fora_usa_cache.txt` | falha — API fora | 3 tentativas → usa cache |
 | `03_falha_api_sem_cache.txt` | falha — API fora sem cache | `FALHA_PREVISAO`, código 2, operação notificada |
