@@ -85,7 +85,7 @@ def publicar(cfg_pub: dict, pasta_api: Path, log, *, carimbo: datetime | None = 
     if not (pasta_api / "ultimo_resultado.json").exists():
         log.aviso("publicacao", "ultimo_resultado.json não existe - nada a publicar")
         return {"status": "FALHA", "enviados": [], "erro": "resultado não gerado"}
-    prefixo = cfg_pub.get("prefixo", "rpa/")
+    prefixo = cfg_pub.get("prefixo", "rpa/entrada/")
     prefixo = prefixo if not prefixo or prefixo.endswith("/") else prefixo + "/"
     regiao = cfg_pub.get("regiao", "us-east-1")
     tentativas = int(cfg_pub.get("tentativas", 3))

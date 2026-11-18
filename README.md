@@ -172,7 +172,7 @@ Ao fim de **cada execução**, o bot junta o resultado e o histórico num único
 do MVP:
 
 ```
-s3://boca-lobo-s3-ingestao/rpa/bocaLobo_AAAAMMDD_HHMMSS.json      (data e hora do início da execução)
+s3://boca-lobo-s3-ingestao/rpa/entrada/bocaLobo_AAAAMMDD_HHMMSS.json      (data e hora do início da execução)
 ```
 
 | Campo do arquivo | Conteúdo |
@@ -183,9 +183,9 @@ s3://boca-lobo-s3-ingestao/rpa/bocaLobo_AAAAMMDD_HHMMSS.json      (data e hora d
 | `bueiros_sem_inspecao` | Bueiros que precisam de nova ronda do carrinho |
 | `historico_execucoes` | Todas as execuções registradas (auditoria) |
 
-* Configuração em `config/config.json → publicacao_s3` (bucket, pasta, região). Desligar sem editar: `PUBLICAR_S3=0`.
+* Configuração em `config/config.json → publicacao_s3` (bucket, pasta `rpa/entrada/`, região). Desligar sem editar: `PUBLICAR_S3=0`.
 * Credenciais **nunca** no código: o bot usa as do ambiente (`aws configure` ou variáveis `AWS_ACCESS_KEY_ID` /
-  `AWS_SECRET_ACCESS_KEY`). Basta a permissão `s3:PutObject` em `boca-lobo-s3-ingestao/rpa/*`.
+  `AWS_SECRET_ACCESS_KEY`). Basta a permissão `s3:PutObject` em `boca-lobo-s3-ingestao/rpa/entrada/*`.
 * 3 tentativas com espera crescente e conferência de integridade (ETag do S3 = MD5 do arquivo).
 * Se o envio falhar, o bot **não para**: registra no log, marca `publicacao_s3 = FALHA` no resumo e avisa a operação.
 * Cópia local de cada arquivo enviado em `output/publicado/`.

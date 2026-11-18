@@ -49,7 +49,7 @@
   "publicacao_s3": {
     "ativo": true,
     "bucket": "boca-lobo-s3-ingestao",
-    "prefixo": "rpa/",
+    "prefixo": "rpa/entrada/",
     "regiao": "us-east-1",
     "tentativas": 3
   }
