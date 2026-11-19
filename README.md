@@ -36,7 +36,7 @@ lista para as equipes e avisa a população por telefone/WhatsApp. É lento, suj
 | Carlos Eduardo Caramante Ribeiro | RM552159 |
 | Ian Cancian Nachtergaele | RM98387 |
 
-🎥 **Vídeo demonstrativo:** *link do vídeo* · 📄 **Relatório técnico:** [`docs/Relatorio_Tecnico_RPA.pdf`](docs/Relatorio_Tecnico_RPA.pdf)
+🎥 **Vídeo demonstrativo:** https://youtu.be/fLuW-UIjYhg · 🌐 **MVP integrado:** https://felipevoidela.github.io/GS2-2026-Big-Data-Architecture/ (aba Limpeza (RPA)) · 📊 **Painel publicado:** https://acussena.github.io/rpa_gs/ · 📄 **Relatório técnico:** [`docs/Relatorio_Tecnico_RPA.pdf`](docs/Relatorio_Tecnico_RPA.pdf)
 
 ---
 
