@@ -61,6 +61,28 @@ class TestApiLocal(BaseTemporaria):
         self.assertEqual(status, 404)
         self.assertIn("erro", corpo)
 
+    def test_log_da_execucao_no_painel(self):
+        self.bot(simular_chuva=75)
+        st, log = self.req("GET", "/api/log")
+        self.assertEqual(st, 200)
+        self.assertEqual(log["execucao_id"], f"EX{AGORA:%Y%m%dT%H%M%S}")
+        etapas = [l["etapa"] for l in log["linhas"]]
+        self.assertIn("decisao", etapas)
+        self.assertEqual(etapas[-1], "fim")
+        self.assertNotRegex(json.dumps(log, ensure_ascii=False), r"\d{4,5}-\d{4}")   # sem telefones no log exibido
+        self.assertEqual(self.req("GET", "/api/log", {"execucao": "../../etc"})[0], 400)
+        self.assertEqual(self.req("GET", "/api/log", {"execucao": "EX20200101T000000"})[0], 404)
+
+    def test_limpar_demo_so_onde_disponivel(self):
+        self.assertEqual(self.req("POST", "/api/demo/limpar")[0], 501)
+        chamado = []
+        st, r = tratar("POST", "/api/demo/limpar", {}, None, {}, self.armaz, token="segredo",
+                       limpar_demo=lambda: chamado.append(1) or {"ok": True})
+        self.assertEqual((st, chamado), (401, []))                      # protegido pelo token
+        st, r = tratar("POST", "/api/demo/limpar", {}, None, {"x-api-key": "segredo"}, self.armaz,
+                       token="segredo", limpar_demo=lambda: {"ok": True})
+        self.assertEqual((st, r), (200, {"ok": True}))
+
     def test_rotas_de_leitura_apos_execucao(self):
         self.bot(simular_chuva=75)
         st, status = self.req("GET", "/api/status")

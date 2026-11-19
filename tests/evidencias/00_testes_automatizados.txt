@@ -1,6 +1,8 @@
 test_alertas_publicos_sem_dados_pessoais (test_api.TestApiLocal) ... ok
 test_executar_com_falha_retorna_502 (test_api.TestApiLocal) ... ok
 test_executar_valida_parametro (test_api.TestApiLocal) ... ok
+test_limpar_demo_so_onde_disponivel (test_api.TestApiLocal) ... ok
+test_log_da_execucao_no_painel (test_api.TestApiLocal) ... ok
 test_post_inspecoes_grava_csv_e_bot_processa (test_api.TestApiLocal) ... ok
 test_post_inspecoes_invalidas (test_api.TestApiLocal) ... ok
 test_rota_inexistente (test_api.TestApiLocal) ... ok
@@ -46,6 +48,6 @@ test_integridade_conferida (test_publicacao.TestPublicacaoS3) ... ok
 test_retentativa_ate_conseguir (test_publicacao.TestPublicacaoS3) ... ok
 
 ----------------------------------------------------------------------
-Ran 46 tests in 3.520s
+Ran 48 tests in 3.638s
 
 OK

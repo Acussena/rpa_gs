@@ -127,6 +127,22 @@ paths:
       summary: Histórico de execuções (auditoria)
       responses:
         "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/Execucao"}}}}}
+  /api/log:
+    get:
+      summary: Log de auditoria de uma execução (sem dados pessoais) - exibido no painel
+      parameters:
+        - {name: execucao, in: query, required: false, description: "EXAAAAMMDDTHHMMSS (padrão = última execução)", schema: {type: string}}
+      responses:
+        "200": {description: OK}
+        "400": {description: Formato de execução inválido}
+        "404": {description: Execução sem log}
+  /api/demo/limpar:
+    post:
+      summary: Apaga resultados e logs locais para recomeçar a demonstração (só no servidor local)
+      security: [{apiKey: []}]
+      responses:
+        "200": {description: OK}
+        "501": {description: Indisponível neste ambiente (AWS)}
   /api/inspecoes:
     post:
       summary: Carrinho/robô envia o resultado da ronda de inspeção

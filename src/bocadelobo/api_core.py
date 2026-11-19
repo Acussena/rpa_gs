@@ -136,8 +136,31 @@ def receber_inspecoes(armaz, dados: dict, agora: datetime) -> dict:
             "mensagem": "inspeções recebidas; serão processadas na próxima execução do bot"}
 
 
+def log_da_execucao(armaz, execucao_id: str | None) -> dict:
+    """GET /api/log?execucao=EX... - linhas do log de auditoria de uma execução (padrão: a última).
+    O log já é gravado sem dados pessoais (telefone/e-mail mascarados), então pode ser exibido no painel."""
+    if not execucao_id:
+        execucao_id = _pacote(armaz)["execucao"]["id"]
+    m = re.fullmatch(r"EX(\d{8})T\d{6}", execucao_id or "")
+    if not m:
+        raise ErroApi(400, "execucao deve ter o formato EXAAAAMMDDTHHMMSS")
+    bruto = armaz.ler(f"logs/bot_{m.group(1)}.jsonl")
+    linhas = []
+    for linha in (bruto or b"").decode("utf-8").splitlines():
+        try:
+            item = json.loads(linha)
+        except ValueError:
+            continue
+        if item.get("execucao_id") == execucao_id:
+            linhas.append({k: item.get(k) for k in ("data_hora", "nivel", "etapa", "mensagem")})
+    if not linhas:
+        raise ErroApi(404, f"nenhum registro de log para a execução {execucao_id}")
+    return {"execucao_id": execucao_id, "linhas": linhas}
+
+
 def tratar(metodo: str, rota: str, params: dict, corpo, headers: dict, armaz, *,
-           executar_bot=None, token: str | None = None, agora: datetime | None = None) -> tuple[int, object]:
+           executar_bot=None, token: str | None = None, agora: datetime | None = None,
+           limpar_demo=None) -> tuple[int, object]:
     """Roteador: devolve (status_http, corpo_json)."""
     metodo = metodo.upper()
     rota = "/" + rota.strip("/")
@@ -151,7 +174,8 @@ def tratar(metodo: str, rota: str, params: dict, corpo, headers: dict, armaz, *,
                 return 200, {"servico": "CitizenTech Boca de Lobo", "status": "ok",
                              "rotas": ["GET /api/status", "GET /api/ordens", "GET /api/ordens/{id_bueiro}",
                                        "GET /api/alertas", "GET /api/alertas/publico", "GET /api/pendencias",
-                                       "GET /api/execucoes", "POST /api/inspecoes", "POST /api/executar"]}
+                                       "GET /api/execucoes", "GET /api/log", "POST /api/inspecoes",
+                                       "POST /api/executar", "POST /api/demo/limpar"]}
             if rota == "/api/status":
                 return 200, _pacote(armaz)["execucao"]
             if rota == "/api/ordens":
@@ -176,6 +200,8 @@ def tratar(metodo: str, rota: str, params: dict, corpo, headers: dict, armaz, *,
                              "reinspecionar": [o for o in p["ordens_servico"] if o.get("reinspecionar")]}
             if rota == "/api/execucoes":
                 return 200, _ler_json(armaz, HISTORICO, [])
+            if rota == "/api/log":
+                return 200, log_da_execucao(armaz, params.get("execucao"))
         elif metodo == "POST":
             if rota == "/api/inspecoes":
                 _autorizar(headers, token)
@@ -195,6 +221,11 @@ def tratar(metodo: str, rota: str, params: dict, corpo, headers: dict, armaz, *,
                         raise ErroApi(400, "simular_chuva deve estar entre 0 e 500 mm")
                 resumo = executar_bot(simular_chuva=simular, falhar_api=bool(dados.get("falhar_api")))
                 return (200 if resumo.get("codigo_saida") == 0 else 502), resumo
+            if rota == "/api/demo/limpar":
+                _autorizar(headers, token)
+                if limpar_demo is None:
+                    raise ErroApi(501, "limpeza da demonstração não disponível neste ambiente")
+                return 200, limpar_demo()
         elif metodo == "OPTIONS":
             return 204, None
         raise ErroApi(404, f"rota não encontrada: {metodo} {rota}")

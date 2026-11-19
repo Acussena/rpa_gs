@@ -78,7 +78,9 @@ class Auditoria:
 
     def __init__(self, pasta_logs: Path, execucao_id: str, console: bool = True):
         pasta_logs.mkdir(parents=True, exist_ok=True)
-        self.arquivo = pasta_logs / f"bot_{datetime.now():%Y%m%d}.jsonl"
+        # um arquivo por dia, pela data da execução (EXAAAAMMDDTHHMMSS) - assim a API acha o log de cada execução
+        dia = execucao_id[2:10] if execucao_id[2:10].isdigit() else f"{datetime.now():%Y%m%d}"
+        self.arquivo = pasta_logs / f"bot_{dia}.jsonl"
         self.logger = logging.getLogger(f"bocadelobo.{execucao_id}")
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False

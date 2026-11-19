@@ -36,6 +36,14 @@
   .alerta { border-left:3px solid var(--pink); padding:8px 12px; margin-bottom:10px; background:#24242a; border-radius:6px; font-size:13.5px; }
   .alerta b { color:#f39ab8; }
   .mut { color:var(--mut); } .tag { font-size:11px; padding:2px 7px; border-radius:6px; background:#33333b; margin-left:4px; }
+  .ctrl { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; }
+  .ctrl label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--mut); text-transform:uppercase; letter-spacing:.05em; }
+  .ctrl input { width:120px; background:#26262c; color:var(--txt); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:15px; }
+  .btn2 { background:#2c2c33; } .btn2:hover, button:hover { filter:brightness(1.15); } .btn-warn { background:#8a5a00; }
+  button:disabled { opacity:.5; cursor:wait; }
+  #execmsg { margin-top:12px; font-size:14px; min-height:20px; }
+  .log td { font-family:Consolas, monospace; font-size:12.5px; padding:4px 8px; }
+  .l-WARNING td { color:var(--alta); } .l-ERROR td, .l-CRITICAL td { color:var(--crit); } .l-pub td { color:var(--ok); }
   .legend span { margin-right:14px; font-size:13px; } .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; }
 </style>
 </head>
@@ -47,11 +55,22 @@
   <button onclick="carregar()">Atualizar</button>
 </header>
 <main>
+  <section class="card span12" id="central">
+    <h2>Central do robô · executar e simular cenários</h2>
+    <div class="ctrl">
+      <button onclick="executarBot({})">▶ Rodar com a previsão real</button>
+      <label>Chuva simulada (mm/24h)<input id="mm" type="number" min="0" max="500" value="75"></label>
+      <button onclick="executarBot({simular_chuva: +document.getElementById('mm').value})">🌧 Simular chuva</button>
+      <button class="btn-warn" onclick="executarBot({falhar_api: true})">⚠ Simular API de previsão fora do ar</button>
+      <button class="btn2" onclick="limparDemo()" title="Apaga resultados e logs para os alertas saírem de novo">🧹 Nova demonstração</button>
+    </div>
+    <div id="execmsg" class="mut">Escolha um cenário. O bot executa todas as etapas, publica o resultado no S3 e o painel se atualiza sozinho.</div>
+  </section>
   <section class="card span12 status" id="status">Carregando…</section>
   <section class="card span3 kpi"><div class="l">Ordens de serviço</div><div class="v" id="k-os">–</div></section>
   <section class="card span3 kpi"><div class="l">Bocas de lobo críticas</div><div class="v p-CRITICA" id="k-crit">–</div></section>
   <section class="card span3 kpi"><div class="l">Aguardando reforço</div><div class="v p-ALTA" id="k-exc">–</div></section>
-  <section class="card span3 kpi"><div class="l">Alertas enviados</div><div class="v" id="k-al">–</div></section>
+  <section class="card span3 kpi"><div class="l">Alertas enviados nesta execução</div><div class="v" id="k-al">–</div></section>
 
   <section class="card span8">
     <h2>Mapa de prioridade</h2>
@@ -73,6 +92,14 @@
     <div class="scroll"><table>
       <thead><tr><th>#</th><th>Boca de lobo</th><th>Endereço</th><th>Área</th><th>Obstrução</th><th>Score</th><th>Prioridade</th><th>Equipe</th><th>Status</th></tr></thead>
       <tbody id="ordens"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card span12">
+    <h2>Log de auditoria da execução <span class="mut" id="log-id" style="text-transform:none;letter-spacing:0"></span></h2>
+    <div class="scroll" style="max-height:360px"><table class="log">
+      <thead><tr><th>Hora</th><th>Nível</th><th>Etapa</th><th>Mensagem</th></tr></thead>
+      <tbody id="log"></tbody>
     </table></div>
   </section>
 
@@ -111,17 +138,19 @@ async function carregar(){
     const [st, os, al, hist] = dados;
     document.getElementById('modo').textContent = estatico
       ? 'Versão publicada: última execução do bot enviada ao repositório' : 'Ao vivo: API local';
+    document.getElementById('central').style.display = estatico ? 'none' : '';
+    carregarLog(estatico, st.id);
     const nivel = st.status && st.status.startsWith('FALHA') ? st.status : (st.nivel || 'NORMAL');
     document.getElementById('status').innerHTML = `
       <span class="badge b-${esc(nivel)}">${esc(nivel)}</span>
       <div><b>${st.chuva_24h_mm ?? '–'} mm</b> <span class="mut">previstos em 24h · pico ${st.pico_mm_h ?? '–'} mm/h · ${st.probabilidade_max_pct ?? '–'}%</span></div>
-      <div class="mut">Fonte: ${esc(st.fonte_previsao || '–')}</div>
+      <div class="mut">Fonte: ${esc(st.fonte_previsao || '–')}${st.publicacao_s3 ? ` · Publicação no S3: <b style="color:${st.publicacao_s3 === 'OK' ? 'var(--ok)' : 'var(--alta)'}">${esc(st.publicacao_s3)}</b>` : ''}</div>
       <div class="mut">Execução ${esc(st.id)} · ${esc((st.inicio||'').replace('T',' '))} · ${esc(st.status)}</div>
       <div style="flex-basis:100%" class="mut">${esc(st.justificativa || st.mensagem || '')}</div>`;
     document.getElementById('k-os').textContent = os.length;
     document.getElementById('k-crit').textContent = os.filter(o => o.prioridade === 'CRITICA').length;
     document.getElementById('k-exc').textContent = os.filter(o => !o.equipe_id).length;
-    document.getElementById('k-al').textContent = al.length;
+    document.getElementById('k-al').textContent = st.alertas_enviados ?? al.length;
 
     camada.clearLayers();
     const pts = [];
@@ -154,8 +183,45 @@ async function carregar(){
       <td>${esc(h.nivel || '–')}</td><td>${h.chuva_24h_mm ?? '–'} mm</td><td>${esc(h.fonte_previsao || '–')}</td>
       <td>${h.linhas_lidas}</td><td>${h.rejeitados}</td><td>${h.ordens_geradas}</td><td>${h.alertas_enviados}</td></tr>`).join('');
   } catch (e) {
-    document.getElementById('status').innerHTML = `<span class="badge b-FALHA">SEM DADOS</span> <span class="mut">${esc(e.message)} — execute o bot: python src/main.py</span>`;
+    document.getElementById('status').innerHTML = `<span class="badge b-FALHA">SEM DADOS</span> <span class="mut">${esc(e.message)} — use a Central do robô acima para executar o bot</span>`;
   }
+}
+async function carregarLog(estatico, id){
+  const corpo = document.getElementById('log');
+  document.getElementById('log-id').textContent = id ? '· ' + id : '';
+  if (estatico) { corpo.innerHTML = '<tr><td colspan="4" class="mut">O log completo fica na pasta logs/ do repositório.</td></tr>'; return; }
+  try {
+    const r = await api('/api/log' + (id ? '?execucao=' + encodeURIComponent(id) : ''));
+    corpo.innerHTML = r.linhas.map(l => `<tr class="l-${esc(l.nivel)}${l.etapa === 'publicacao' && l.nivel === 'INFO' ? ' l-pub' : ''}">
+      <td>${esc((l.data_hora || '').slice(11))}</td><td>${esc(l.nivel)}</td><td>${esc(l.etapa)}</td><td>${esc(l.mensagem)}</td></tr>`).join('');
+  } catch (e) { corpo.innerHTML = `<tr><td colspan="4" class="mut">${esc(e.message)}</td></tr>`; }
+}
+function travar(on){ document.querySelectorAll('#central button').forEach(b => b.disabled = on); }
+async function executarBot(corpo){
+  const msg = document.getElementById('execmsg');
+  travar(true);
+  msg.innerHTML = '⏳ Executando o bot: previsão → decisão → inspeções → priorização → alertas → publicação no S3…';
+  try {
+    const x = await fetch('/api/executar', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(corpo)});
+    const r = await x.json();
+    if (r.erro) throw new Error(r.erro);
+    const ok = r.codigo_saida === 0;
+    msg.innerHTML = `${ok ? '✅' : '⛔'} <b>${esc(r.id)}</b> · ${esc(r.status)} · nível <b>${esc(r.nivel || '–')}</b> · previsão: ${esc(r.fonte_previsao || '–')} · código de saída ${r.codigo_saida}`
+      + ` · ${r.ordens_geradas ?? 0} ordens · ${r.alertas_enviados ?? 0} alertas · S3: ${esc(r.publicacao_s3 || '–')}`
+      + `<div class="mut">${esc(r.mensagem || r.justificativa || '')}</div>`;
+  } catch (e) { msg.innerHTML = `⛔ ${esc(e.message)}`; }
+  travar(false);
+  await carregar();
+}
+async function limparDemo(){
+  if (!confirm('Apagar os resultados e logs locais para recomeçar a demonstração?')) return;
+  travar(true);
+  try {
+    const r = await (await fetch('/api/demo/limpar', {method:'POST'})).json();
+    document.getElementById('execmsg').textContent = '🧹 ' + (r.mensagem || r.erro);
+  } catch (e) { document.getElementById('execmsg').textContent = '⛔ ' + e.message; }
+  travar(false);
+  carregar();
 }
 iniciarMapa(); carregar();
 </script>

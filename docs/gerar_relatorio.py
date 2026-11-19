@@ -184,12 +184,23 @@ excedentes, alertas enviados/ignorados e falhas. Telefones e e-mails nunca são 
 <p>🔑 exige o cabeçalho <code>x-api-key</code> quando <code>API_TOKEN</code> está configurado. A lógica da API
 (<code>src/bocadelobo/api_core.py</code>) não depende do ambiente: roda localmente (<code>python src/api.py</code>) e já está
 preparada para AWS (API Gateway + Lambda + S3, pasta <code>aws/</code>).</p>
+<h3>Publicação na nuvem e site integrado do MVP</h3>
+<table><tr><th>Etapa</th><th>Como funciona</th></tr>
+<tr><td>Publicação no S3</td><td>Ao fim de cada execução o bot envia <code>bocaLobo_AAAAMMDD_HHMMSS.json</code> (resultado + histórico)
+para <code>s3://boca-lobo-s3-ingestao/rpa/entrada/</code>, com 3 tentativas e conferência de integridade (ETag = MD5).
+Falha no envio não derruba o bot: é registrada no log e a operação é avisada.</td></tr>
+<tr><td>Site do MVP</td><td>O front-end integrado lê o arquivo mais recente do S3 e mostra a lista na aba <b>Limpeza (RPA)</b>:
+https://felipevoidela.github.io/GS2-2026-Big-Data-Architecture/ (o código da execução aparece no rodapé).</td></tr>
+<tr><td>Execução diária</td><td>GitHub Actions às 06:00 (Brasília): roda os testes e o bot, publica no S3 e grava o resultado no
+repositório, o que atualiza o painel publicado em https://acussena.github.io/rpa_gs/.</td></tr>
+<tr><td>Central do robô</td><td>No painel local (<code>abrir_painel.bat</code>), botões executam o bot com a previsão real, simulam a
+chuva ou a queda da API de previsão e exibem o log de auditoria da execução, sem uso de terminal.</td></tr></table>
 <figure>{img("assets/dashboard_mvp.png")}<figcaption>Figura 2 — Dashboard do MVP consumindo a API do bot: nível, KPIs, mapa de prioridade, alertas, lista de limpeza e histórico.</figcaption></figure>
 <figure>{img("assets/api_ordens_json.png", "width:80%;display:block;margin:auto")}<figcaption>Figura 3 — Resposta da rota <code>GET /api/ordens</code>.</figcaption></figure>
 
 <h2 class="quebra">9. Testes realizados (sucesso, decisão e falha)</h2>
-<p>46 testes automatizados em <code>tests/test_bot.py</code> e <code>tests/test_api.py</code> e <code>tests/test_publicacao.py</code> (<code>python -m unittest discover -s tests -v</code>) —
-<b>46/46 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
+<p>48 testes automatizados em <code>tests/test_bot.py</code> e <code>tests/test_api.py</code> e <code>tests/test_publicacao.py</code> (<code>python -m unittest discover -s tests -v</code>) —
+<b>48/48 aprovados</b>. Cada teste roda numa pasta temporária, com data de referência fixa. Execuções manuais registradas em
 <code>tests/evidencias/</code>:</p>
 <table><tr><th>Tipo</th><th>Cenário</th><th>Resultado esperado</th><th>Obtido</th></tr>
 <tr><td>Sucesso</td><td>Simulação 75 mm</td><td>ALERTA, OS priorizadas, alertas, integração MVP</td><td>✔ 19 OS (11 críticas), 4 aguardando reforço, 17 alertas, JSON/banco gerados</td></tr>
@@ -221,7 +232,9 @@ da incolumidade física (art. 7º, VII).</li>
 
 <h2>11. Links</h2>
 <table><tr><th>Repositório GitHub</th><td>{html.escape(eq['link_github'])}</td></tr>
-<tr><th>Vídeo demonstrativo</th><td>{html.escape(eq['link_video'])}</td></tr></table>
+<tr><th>Vídeo demonstrativo</th><td>{html.escape(eq['link_video'])}</td></tr>
+<tr><th>Site integrado do MVP</th><td>https://felipevoidela.github.io/GS2-2026-Big-Data-Architecture/ (aba Limpeza (RPA))</td></tr>
+<tr><th>Painel publicado</th><td>https://acussena.github.io/rpa_gs/</td></tr></table>
 </body></html>"""
 
 saida_html = DOCS / "relatorio.html"

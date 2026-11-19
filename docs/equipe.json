@@ -1,11 +1,20 @@
 {
   "_instrucoes": "Preencha com os dados reais e rode: python docs/gerar_relatorio.py  (gera docs/Relatorio_Tecnico_RPA.pdf)",
   "integrantes": [
-    {"nome": "NOME COMPLETO DO INTEGRANTE 1", "rm": "RM000000"},
-    {"nome": "NOME COMPLETO DO INTEGRANTE 2", "rm": "RM000000"},
-    {"nome": "NOME COMPLETO DO INTEGRANTE 3", "rm": "RM000000"}
+    {
+      "nome": "NOME COMPLETO DO INTEGRANTE 1",
+      "rm": "RM000000"
+    },
+    {
+      "nome": "NOME COMPLETO DO INTEGRANTE 2",
+      "rm": "RM000000"
+    },
+    {
+      "nome": "NOME COMPLETO DO INTEGRANTE 3",
+      "rm": "RM000000"
+    }
   ],
   "turma": "Engenharia de Software - 4º ano",
-  "link_github": "https://github.com/SEU-USUARIO/boca-de-lobo-rpa",
+  "link_github": "https://github.com/Acussena/rpa_gs",
   "link_video": "https://youtu.be/SEU-VIDEO"
 }

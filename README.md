@@ -136,7 +136,22 @@ O resultado é consumido pelos outros componentes por **três vias**:
 | Arquivos estruturados | `output/api/ultimo_resultado.json`, `output/api/execucoes.json`, `output/ordens_servico_<execucao>.csv` | BI, integrações em lote |
 
 O **dashboard** (`mvp/index.html`, servido em `/`) consome a API e mostra nível de risco, KPIs, mapa com as bocas de
-lobo por prioridade, lista para limpeza, alertas emitidos e histórico de execuções.
+lobo por prioridade, lista para limpeza, alertas emitidos, **log de auditoria da execução** e histórico de execuções.
+
+**Tudo pelo painel, sem terminal:** dê dois cliques em [`abrir_painel.bat`](abrir_painel.bat) (Windows). Ele sobe o
+servidor local numa janela minimizada e abre o navegador. A **Central do robô**, no topo do painel, executa o bot e
+simula os cenários:
+
+| Botão | O que acontece |
+|---|---|
+| ▶ Rodar com a previsão real | Consulta a Open-Meteo, decide e executa o processo completo |
+| 🌧 Simular chuva (mm) | Força a chuva prevista: 75 mm = ALERTA, 30 mm = ATENÇÃO, 5 mm = sem ação |
+| ⚠ Simular API de previsão fora do ar | 3 tentativas com espera crescente, depois cache (< 24 h) ou falha controlada (código 2) |
+| 🧹 Nova demonstração | Apaga resultados e logs locais (mantém o cache) para os alertas saírem de novo |
+
+Cada execução também é publicada no S3 (`rpa/entrada/`), e o site integrado do MVP mostra o resultado na aba
+**Limpeza (RPA)**: https://felipevoidela.github.io/GS2-2026-Big-Data-Architecture/. Uma versão só de leitura do painel
+fica publicada no GitHub Pages: https://acussena.github.io/rpa_gs/
 
 ### 🌐 API REST
 
@@ -200,7 +215,7 @@ python src/main.py --simular-chuva 75   # cenário de chuva forte (ALERTA)
 python src/main.py --simular-chuva 30   # cenário ATENÇÃO
 python src/main.py --simular-chuva 5    # cenário sem ação
 python src/main.py --falhar-api         # simula API fora do ar (cache ou falha controlada)
-python src/api.py                       # API REST + dashboard em http://localhost:8000
+python src/api.py                       # API REST + dashboard em http://localhost:8000 (ou abrir_painel.bat)
 python -m unittest discover -s tests -v # testes automatizados
 ```
 
@@ -219,12 +234,12 @@ roda normalmente e só a publicação no S3 fica desligada. Teste manual: aba *A
 
 ## ✅ Testes
 
-46 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS; `tests/test_publicacao.py` — envio ao S3) cobrindo **sucesso, decisão e falha**; evidências em
+48 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS; `tests/test_publicacao.py` — envio ao S3) cobrindo **sucesso, decisão e falha**; evidências em
 [`tests/evidencias/`](tests/evidencias/):
 
 | Evidência | Cenário | Resultado |
 |---|---|---|
-| `00_testes_automatizados.txt` | suíte completa | 46/46 OK |
+| `00_testes_automatizados.txt` | suíte completa | 48/48 OK |
 | `01_previsao_real.txt` | API real | previsão obtida, decisão tomada |
 | `02_api_fora_usa_cache.txt` | falha — API fora | 3 tentativas → usa cache |
 | `03_falha_api_sem_cache.txt` | falha — API fora sem cache | `FALHA_PREVISAO`, código 2, operação notificada |
