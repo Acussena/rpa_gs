@@ -211,6 +211,12 @@ defina a variável `ALERTA_WEBHOOK_URL`.
 ou Agendador do Windows ([`scripts/agendar_windows.ps1`](scripts/agendar_windows.ps1)) ou cron
 (`0 6 * * * cd /caminho && python src/main.py`).
 
+No GitHub Actions, a execução das 06:00 (horário de Brasília) roda os testes e o bot, publica o arquivo no S3
+(`rpa/entrada/`) e grava `output/` e `logs/` de volta no repositório. Assim o painel do GitHub Pages
+(https://acussena.github.io/rpa_gs/) sempre mostra a última execução. Para publicar no S3, cadastre em
+*Settings → Secrets and variables → Actions* os secrets `AWS_ACCESS_KEY_ID` e `AWS_SECRET_ACCESS_KEY`. Sem eles, o bot
+roda normalmente e só a publicação no S3 fica desligada. Teste manual: aba *Actions → Bot Boca de Lobo → Run workflow*.
+
 ## ✅ Testes
 
 46 testes automatizados (`tests/test_bot.py` — bot; `tests/test_api.py` — API e versão AWS; `tests/test_publicacao.py` — envio ao S3) cobrindo **sucesso, decisão e falha**; evidências em

@@ -1,5 +1,11 @@
 # Execução agendada do bot: todo dia às 06:00 (horário de Brasília = 09:00 UTC).
 # Também pode ser disparado manualmente (aba Actions > Run workflow), inclusive simulando chuva.
+#
+# A cada execução o bot:
+#   1. publica bocaLobo_AAAAMMDD_HHMMSS.json no S3 (rpa/entrada/), usando os secrets AWS_ACCESS_KEY_ID e
+#      AWS_SECRET_ACCESS_KEY. Sem esses secrets, a publicação é desligada (PUBLICAR_S3=0) e o resto roda normal;
+#   2. grava o resultado (output/ e logs/) de volta no repositório. Isso mantém o histórico e o banco entre os
+#      dias e atualiza o painel publicado no GitHub Pages.
 name: Bot Boca de Lobo (diário)
 
 on:
@@ -11,6 +17,16 @@ on:
         description: "Simular chuva em mm/24h (vazio = previsão real)"
         required: false
 
+permissions:
+  contents: write            # necessário para gravar o resultado de volta no repositório
+
+concurrency:
+  group: bot-boca-de-lobo    # nunca duas execuções ao mesmo tempo
+  cancel-in-progress: false
+
+env:
+  TZ: America/Sao_Paulo      # datas e nomes de arquivo no horário de Brasília (o runner usa UTC)
+
 jobs:
   executar:
     runs-on: ubuntu-latest
@@ -21,15 +37,39 @@ jobs:
           python-version: "3.11"
       - name: Testes automatizados
         run: python -m unittest discover -s tests -v
+
       - name: Executar bot
         env:
           ALERTA_WEBHOOK_URL: ${{ secrets.ALERTA_WEBHOOK_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          SIMULAR_CHUVA: ${{ github.event.inputs.simular_chuva }}
         run: |
-          if [ -n "${{ github.event.inputs.simular_chuva }}" ]; then
-            python src/main.py --simular-chuva "${{ github.event.inputs.simular_chuva }}"
+          if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+            echo "::warning::Secrets da AWS não configurados - publicação no S3 desligada nesta execução"
+            export PUBLICAR_S3=0
+          fi
+          if [ -n "$SIMULAR_CHUVA" ]; then
+            python src/main.py --simular-chuva "$SIMULAR_CHUVA"
           else
             python src/main.py
           fi
+
+      - name: Gravar resultado no repositório
+        if: always()
+        run: |
+          git config user.name  "bot-boca-de-lobo"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output logs
+          if git diff --cached --quiet; then
+            echo "Nada novo para gravar"
+          else
+            git commit -m "Execução automática do bot - $(date '+%Y-%m-%d %H:%M')"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
       - name: Publicar evidências da execução
         if: always()
         uses: actions/upload-artifact@v4
