@@ -26,7 +26,7 @@ figure { margin:8px 0; break-inside:avoid; } figcaption { font-size:8.5pt; color
   <h1>Boca de Lobo<br>Bot RPA de prevenção de alagamentos</h1>
   <div class="sub">Relatório Técnico — Robotic Process Automation<br>“Do Processo Manual à Automação Inteligente”</div>
   <p style="margin-top:28px">Professores: Bruno Diniz e Cibele Ribeiro · Engenharia de Software - 4º ano</p>
-  <table style="width:70%"><tr><th>Integrante</th><th>RM</th></tr><tr><td>NOME COMPLETO DO INTEGRANTE 1</td><td>RM000000</td></tr><tr><td>NOME COMPLETO DO INTEGRANTE 2</td><td>RM000000</td></tr><tr><td>NOME COMPLETO DO INTEGRANTE 3</td><td>RM000000</td></tr></table>
+  <table style="width:70%"><tr><th>Integrante</th><th>RM</th></tr><tr><td>Açussena Macedo Mautone</td><td>RM552568</td></tr><tr><td>Felipe Heilmann Marques</td><td>RM551026</td></tr><tr><td>Felipe Voidela Toledo</td><td>RM98595</td></tr><tr><td>Carlos Eduardo Caramante Ribeiro</td><td>RM552159</td></tr><tr><td>Ian Cancian Nachtergaele</td><td>RM98387</td></tr></table>
   <p><b>Repositório:</b> https://github.com/Acussena/rpa_gs<br><b>Vídeo:</b> https://youtu.be/SEU-VIDEO</p>
 </section>
 
@@ -137,9 +137,9 @@ Faixas: <b>CRÍTICA ≥ 70 · ALTA ≥ 50 · MÉDIA ≥ 30 · BAIXA &lt; 30</b>.
 <p>Cada execução recebe um <code>execucao_id</code>. Os eventos vão para <code>logs/bot_AAAAMMDD.jsonl</code> (data/hora, nível,
 etapa, mensagem, dados) e o resumo para a tabela <code>execucoes</code>: itens lidos, válidos, rejeitados, duplicados, OS,
 excedentes, alertas enviados/ignorados e falhas. Telefones e e-mails nunca são gravados (mascaramento + filtro de segurança).</p>
-<pre>{&quot;data_hora&quot;: &quot;2026-11-18T22:36:40&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T223640&quot;, &quot;etapa&quot;: &quot;decisao&quot;, &quot;mensagem&quot;: &quot;Nível NORMAL: 3.5 mm em 24h abaixo do limite de 20 mm&quot;}
-{&quot;data_hora&quot;: &quot;2026-11-18T22:36:42&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T223640&quot;, &quot;etapa&quot;: &quot;publicacao&quot;, &quot;mensagem&quot;: &quot;Publicado s3://boca-lobo-s3-ingestao/rpa/entrada/bocaLobo_20261118_223640.json (29730 bytes, integridade ok)&quot;}
-{&quot;data_hora&quot;: &quot;2026-11-18T22:36:42&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T223640&quot;, &quot;etapa&quot;: &quot;fim&quot;, &quot;mensagem&quot;: &quot;Execução EX20261118T223640 finalizada: SEM_ACAO (código 0)&quot;, &quot;dados&quot;: {&quot;status&quot;: &quot;SEM_ACAO&quot;, &quot;nivel&quot;: &quot;NORMAL&quot;, &quot;chuva_24h_mm&quot;: 3.5, &quot;linhas_lidas&quot;: 0, &quot;inspecoes_validas&quot;: 0, &quot;rejeitados&quot;: 0, &quot;duplicados&quot;: 0, &quot;ordens_geradas&quot;: 0, &quot;excedentes&quot;: 0, &quot;alertas_enviados&quot;: 0, &quot;alertas_ignorados&quot;: 0, &quot;falhas_envio&quot;: 0, &quot;publicacao_s3&quot;: &quot;OK&quot;}}</pre>
+<pre>{&quot;data_hora&quot;: &quot;2026-11-18T23:18:18&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T231815&quot;, &quot;etapa&quot;: &quot;decisao&quot;, &quot;mensagem&quot;: &quot;Nível NORMAL: 3.4 mm em 24h abaixo do limite de 20 mm&quot;}
+{&quot;data_hora&quot;: &quot;2026-11-18T23:18:21&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T231815&quot;, &quot;etapa&quot;: &quot;publicacao&quot;, &quot;mensagem&quot;: &quot;Publicado s3://boca-lobo-s3-ingestao/rpa/entrada/bocaLobo_20261118_231815.json (38076 bytes, integridade ok)&quot;}
+{&quot;data_hora&quot;: &quot;2026-11-18T23:18:21&quot;, &quot;nivel&quot;: &quot;INFO&quot;, &quot;execucao_id&quot;: &quot;EX20261118T231815&quot;, &quot;etapa&quot;: &quot;fim&quot;, &quot;mensagem&quot;: &quot;Execução EX20261118T231815 finalizada: SEM_ACAO (código 0)&quot;, &quot;dados&quot;: {&quot;status&quot;: &quot;SEM_ACAO&quot;, &quot;nivel&quot;: &quot;NORMAL&quot;, &quot;chuva_24h_mm&quot;: 3.4, &quot;linhas_lidas&quot;: 0, &quot;inspecoes_validas&quot;: 0, &quot;rejeitados&quot;: 0, &quot;duplicados&quot;: 0, &quot;ordens_geradas&quot;: 0, &quot;excedentes&quot;: 0, &quot;alertas_enviados&quot;: 0, &quot;alertas_ignorados&quot;: 0, &quot;falhas_envio&quot;: 0, &quot;publicacao_s3&quot;: &quot;OK&quot;}}</pre>
 <pre>12:48:01 INFO    [decisao] Nível ALERTA: 75.0 mm em 24h &gt;= 50 mm (alerta)
 12:48:01 INFO    [priorizacao] BL-001 obstr=92% área=Jardim Pantanal score=94.0 -&gt; CRITICA | incluído
 12:48:01 INFO    [priorizacao] BL-005 obstr=15% área=Jardim Pantanal score=55.5 -&gt; ALTA | sem necessidade (obstrução baixa)
@@ -203,6 +203,8 @@ chuva ou a queda da API de previsão e exibem o log de auditoria da execução, 
 <pre>test_alertas_publicos_sem_dados_pessoais (test_api.TestApiLocal) ... ok
 test_executar_com_falha_retorna_502 (test_api.TestApiLocal) ... ok
 test_executar_valida_parametro (test_api.TestApiLocal) ... ok
+test_limpar_demo_so_onde_disponivel (test_api.TestApiLocal) ... ok
+test_log_da_execucao_no_painel (test_api.TestApiLocal) ... ok
 test_post_inspecoes_grava_csv_e_bot_processa (test_api.TestApiLocal) ... ok
 test_post_inspecoes_invalidas (test_api.TestApiLocal) ... ok
 test_rota_inexistente (test_api.TestApiLocal) ... ok
@@ -227,9 +229,7 @@ test_sucesso_chuva_forte_gera_os_alertas_e_integra_mvp (test_bot.TestPontaAPonta
 test_api_fora_sem_cache_levanta_excecao (test_bot.TestPrevisao) ... ok
 test_api_fora_usa_cache_valido (test_bot.TestPrevisao) ... ok
 test_cache_expirado_e_descartado (test_bot.TestPrevisao) ... ok
-test_interpreta_somente_proximas_24h (test_bot.TestPrevisao) ... ok
-test_json_corrompido_conta_como_falha (test_bot.TestPrevisao) ... ok
-test_resposta_incompleta_e_invalida (test_bot.TestPrevisao) ... ok</pre>
+test_interpreta_somente_proximas_24h (test_bot.TestPrevisao) ... ok</pre>
 
 <h2>10. Considerações de segurança e LGPD</h2>
 <ul>

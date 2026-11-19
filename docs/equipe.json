@@ -2,16 +2,24 @@
   "_instrucoes": "Preencha com os dados reais e rode: python docs/gerar_relatorio.py  (gera docs/Relatorio_Tecnico_RPA.pdf)",
   "integrantes": [
     {
-      "nome": "NOME COMPLETO DO INTEGRANTE 1",
-      "rm": "RM000000"
+      "nome": "Açussena Macedo Mautone",
+      "rm": "RM552568"
     },
     {
-      "nome": "NOME COMPLETO DO INTEGRANTE 2",
-      "rm": "RM000000"
+      "nome": "Felipe Heilmann Marques",
+      "rm": "RM551026"
     },
     {
-      "nome": "NOME COMPLETO DO INTEGRANTE 3",
-      "rm": "RM000000"
+      "nome": "Felipe Voidela Toledo",
+      "rm": "RM98595"
+    },
+    {
+      "nome": "Carlos Eduardo Caramante Ribeiro",
+      "rm": "RM552159"
+    },
+    {
+      "nome": "Ian Cancian Nachtergaele",
+      "rm": "RM98387"
     }
   ],
   "turma": "Engenharia de Software - 4º ano",

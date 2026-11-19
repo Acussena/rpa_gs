@@ -30,9 +30,11 @@ lista para as equipes e avisa a população por telefone/WhatsApp. É lento, suj
 
 | Nome | RM |
 |---|---|
-| *preencher* | *RM* |
-| *preencher* | *RM* |
-| *preencher* | *RM* |
+| Açussena Macedo Mautone | RM552568 |
+| Felipe Heilmann Marques | RM551026 |
+| Felipe Voidela Toledo | RM98595 |
+| Carlos Eduardo Caramante Ribeiro | RM552159 |
+| Ian Cancian Nachtergaele | RM98387 |
 
 🎥 **Vídeo demonstrativo:** *link do vídeo* · 📄 **Relatório técnico:** [`docs/Relatorio_Tecnico_RPA.pdf`](docs/Relatorio_Tecnico_RPA.pdf)
 
