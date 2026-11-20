@@ -1,8 +1,8 @@
 {
   "execucao": {
-    "id": "EX20261119T145541",
-    "inicio": "2026-11-19T14:55:41",
-    "status": "SEM_ACAO",
+    "id": "EX20261120T142849",
+    "inicio": "2026-11-20T14:28:49",
+    "status": "FALHA_PREVISAO",
     "ordens_geradas": 0,
     "excedentes": 0,
     "alertas_enviados": 0,
@@ -13,15 +13,9 @@
     "rejeitados": 0,
     "duplicados": 0,
     "arquivos_invalidos": 0,
-    "fonte_previsao": "open-meteo",
-    "chuva_24h_mm": 1.9,
-    "pico_mm_h": 0.5,
-    "probabilidade_max_pct": 74.0,
-    "nivel": "NORMAL",
-    "justificativa": "1.9 mm em 24h abaixo do limite de 20 mm",
-    "mensagem": "Chuva abaixo do limite - nenhuma ação necessária",
-    "fim": "2026-11-19T14:55:41",
-    "codigo_saida": 0
+    "mensagem": "API de previsão fora do ar e sem cache válido",
+    "fim": "2026-11-20T14:29:22",
+    "codigo_saida": 2
   },
   "ordens_servico": [],
   "alertas": [],
