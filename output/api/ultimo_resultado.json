@@ -1,7 +1,7 @@
 {
   "execucao": {
-    "id": "EX20261121T133412",
-    "inicio": "2026-11-21T13:34:12",
+    "id": "EX20261122T135155",
+    "inicio": "2026-11-22T13:51:55",
     "status": "SEM_ACAO",
     "ordens_geradas": 0,
     "excedentes": 0,
@@ -14,13 +14,13 @@
     "duplicados": 0,
     "arquivos_invalidos": 0,
     "fonte_previsao": "open-meteo",
-    "chuva_24h_mm": 0.6,
-    "pico_mm_h": 0.2,
-    "probabilidade_max_pct": 55.0,
+    "chuva_24h_mm": 5.5,
+    "pico_mm_h": 3.2,
+    "probabilidade_max_pct": 83.0,
     "nivel": "NORMAL",
-    "justificativa": "0.6 mm em 24h abaixo do limite de 20 mm",
+    "justificativa": "5.5 mm em 24h abaixo do limite de 20 mm",
     "mensagem": "Chuva abaixo do limite - nenhuma ação necessária",
-    "fim": "2026-11-21T13:34:12",
+    "fim": "2026-11-22T13:51:55",
     "codigo_saida": 0
   },
   "ordens_servico": [],
