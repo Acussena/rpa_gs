@@ -1,5 +1,28 @@
 [
   {
+    "id": "EX20261124T165239",
+    "inicio": "2026-11-24T16:52:39",
+    "fim": "2026-11-24T16:52:39",
+    "status": "CONCLUIDO_COM_PENDENCIAS",
+    "nivel": "ATENCAO",
+    "justificativa": "29.7 mm em 24h >= 20 mm (atenção)",
+    "fonte_previsao": "open-meteo",
+    "chuva_24h_mm": 29.7,
+    "pico_mm_h": 20.2,
+    "probabilidade_max_pct": 94.0,
+    "linhas_lidas": 44,
+    "inspecoes_validas": 23,
+    "rejeitados": 7,
+    "duplicados": 2,
+    "arquivos_invalidos": 1,
+    "ordens_geradas": 17,
+    "excedentes": 2,
+    "alertas_enviados": 14,
+    "alertas_ignorados": 0,
+    "falhas_envio": 0,
+    "mensagem": "[Boca de Lobo] ATENCAO - 30 mm previstos. 17 OS geradas (2 aguardando reforço), 14 alertas enviados. Áreas: Jardim Pantanal, Vila Itaim, Jardim Romano."
+  },
+  {
     "id": "EX20261123T174913",
     "inicio": "2026-11-23T17:49:13",
     "fim": "2026-11-23T17:49:13",

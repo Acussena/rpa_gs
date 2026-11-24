@@ -1,7 +1,7 @@
 {
   "execucao": {
-    "id": "EX20261123T174913",
-    "inicio": "2026-11-23T17:49:13",
+    "id": "EX20261124T165239",
+    "inicio": "2026-11-24T16:52:39",
     "status": "CONCLUIDO_COM_PENDENCIAS",
     "ordens_geradas": 17,
     "excedentes": 2,
@@ -14,13 +14,13 @@
     "duplicados": 2,
     "arquivos_invalidos": 1,
     "fonte_previsao": "open-meteo",
-    "chuva_24h_mm": 22.4,
-    "pico_mm_h": 12.9,
-    "probabilidade_max_pct": 95.0,
+    "chuva_24h_mm": 29.7,
+    "pico_mm_h": 20.2,
+    "probabilidade_max_pct": 94.0,
     "nivel": "ATENCAO",
-    "justificativa": "22.4 mm em 24h >= 20 mm (atenção)",
-    "mensagem": "[Boca de Lobo] ATENCAO - 22 mm previstos. 17 OS geradas (2 aguardando reforço), 14 alertas enviados. Áreas: Jardim Pantanal, Vila Itaim, Jardim Romano.",
-    "fim": "2026-11-23T17:49:13",
+    "justificativa": "29.7 mm em 24h >= 20 mm (atenção)",
+    "mensagem": "[Boca de Lobo] ATENCAO - 30 mm previstos. 17 OS geradas (2 aguardando reforço), 14 alertas enviados. Áreas: Jardim Pantanal, Vila Itaim, Jardim Romano.",
+    "fim": "2026-11-24T16:52:39",
     "codigo_saida": 0
   },
   "ordens_servico": [
@@ -367,9 +367,9 @@
   ],
   "alertas": [
     {
-      "chave_idempotencia": "8e549807d709ae8ce34e",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "b5a7741b5324ad694c72",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "equipe_limpeza",
       "destinatario_id": "EQ-01",
       "destino_mascarado": "Equipe Leste 1",
@@ -379,9 +379,9 @@
       "mensagem": "Ordem de serviço ATENÇÃO - limpar antes da chuva: 1. BL-001 Rua das Garças, 664 (CRITICA, 92% obstruído) | 3. BL-002 Rua do Aguapé, 238 (CRITICA, 85% obstruído) | 5. BL-004 Rua Taboa, 40 (CRITICA, 78% obstruído) | 8. BL-006 Rua Martim-Pescador, 568 (CRITICA, 66% obstruído) | 12. BL-003 Travessa Beira-Rio, 923 (ALTA, 40% obstruído)"
     },
     {
-      "chave_idempotencia": "24314e359cecb52e5565",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "bc46b8c50f6d542371bc",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "equipe_limpeza",
       "destinatario_id": "EQ-02",
       "destino_mascarado": "Equipe Leste 2",
@@ -391,9 +391,9 @@
       "mensagem": "Ordem de serviço ATENÇÃO - limpar antes da chuva: 2. BL-017 Rua Romano, 373 (CRITICA, 95% obstruído) | 6. BL-020 Rua Pedra Lisa, 286 (CRITICA, 81% obstruído) | 7. BL-018 Rua das Lavadeiras, 709 (CRITICA, 74% obstruído) | 10. BL-021 Rua Ribeirinha, 342 (CRITICA, 64% obstruído) | 13. BL-019 Rua Vala Grande, 556 (ALTA, 38% obstruído)"
     },
     {
-      "chave_idempotencia": "8cc5165319e2d65ac394",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "37c8be3f28c217bb8d67",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "equipe_limpeza",
       "destinatario_id": "EQ-03",
       "destino_mascarado": "Equipe Leste 3",
@@ -403,136 +403,136 @@
       "mensagem": "Ordem de serviço ATENÇÃO - limpar antes da chuva: 4. BL-007 Rua Córrego Verde, 838 (CRITICA, 88% obstruído) | 9. BL-010 Rua Três Pontes, 377 (CRITICA, 71% obstruído) | 11. BL-008 Rua das Palmeiras, 442 (CRITICA, 52% obstruído) | 14. BL-009 Rua Itaim Baixo, 791 (ALTA, 30% obstruído) | 15. BL-013 Rua dos Ipês, 643 (ALTA, 60% obstruído)"
     },
     {
-      "chave_idempotencia": "333d2b1a151429aa366c",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "803dbec539fa7a94c7dc",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-001",
       "destino_mascarado": "(11) 9****-**72",
       "canal": "sms",
       "area_id": "AR-01",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 22 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 30 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "6f4a0c112517da5f174d",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "3300e9dc2cfafebc7706",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-006",
       "destino_mascarado": "f***@exemplo.com",
       "canal": "email",
       "area_id": "AR-01",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 22 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 30 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "22bbe31cf2adad5e5974",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "d911cba0bfe5d9335c8e",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-011",
       "destino_mascarado": "k***@exemplo.com",
       "canal": "email",
       "area_id": "AR-01",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 22 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 30 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "34e4ab4d8087849a5ae2",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "33321f525fc8bb7668e5",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-016",
       "destino_mascarado": "(11) 9****-**43",
       "canal": "whatsapp",
       "area_id": "AR-01",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 22 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Pantanal: previsão de 30 mm nas próximas 24h. Evite passar por: Rua das Garças, Rua do Aguapé, Rua Taboa (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "d4eaf20b0db2e0e7cf61",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "076b085b35c49838c54d",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-002",
       "destino_mascarado": "(11) 9****-**56",
       "canal": "whatsapp",
       "area_id": "AR-02",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "96b773d73ead830ff5b6",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "6a277700ebff6cec68ce",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-007",
       "destino_mascarado": "(11) 9****-**36",
       "canal": "sms",
       "area_id": "AR-02",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "952a59c48a927c9daebb",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "dae9c8274c3821c540d9",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-012",
       "destino_mascarado": "l***@exemplo.com",
       "canal": "email",
       "area_id": "AR-02",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "0a92d9b7a9881e2350d9",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "6723bed60090405b3b92",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-017",
       "destino_mascarado": "(11) 9****-**83",
       "canal": "whatsapp",
       "area_id": "AR-02",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Vila Itaim: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Córrego Verde, Rua Três Pontes, Rua das Palmeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "f344c3e17d2c2c4d6941",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "a89588ab6ac464fbac3b",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-009",
       "destino_mascarado": "i***@exemplo.com",
       "canal": "email",
       "area_id": "AR-04",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "11a05040be44f86832e4",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "ececbd8d85da31367bfe",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-014",
       "destino_mascarado": "(11) 9****-**53",
       "canal": "whatsapp",
       "area_id": "AR-04",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     },
     {
-      "chave_idempotencia": "16abd4b0503596d0a5de",
-      "execucao_id": "EX20261123T174913",
-      "criado_em": "2026-11-23T17:49:13",
+      "chave_idempotencia": "12752baf8dfeafcc2d6f",
+      "execucao_id": "EX20261124T165239",
+      "criado_em": "2026-11-24T16:52:39",
       "publico": "morador",
       "destinatario_id": "M-019",
       "destino_mascarado": "(11) 9****-**84",
       "canal": "sms",
       "area_id": "AR-04",
       "nivel": "ATENCAO",
-      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 22 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
+      "mensagem": "[CitizenTech] ATENÇÃO de chuva forte em Jardim Romano: previsão de 30 mm nas próximas 24h. Evite passar por: Rua Romano, Rua Pedra Lisa, Rua das Lavadeiras (bocas de lobo obstruídas, risco de alagamento). Equipes de limpeza já foram acionadas. Emergência: Defesa Civil 199 | Bombeiros 193."
     }
   ],
   "bueiros_sem_inspecao": [
