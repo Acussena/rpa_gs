@@ -1,5 +1,28 @@
 [
   {
+    "id": "EX20261128T141903",
+    "inicio": "2026-11-28T14:19:03",
+    "fim": "2026-11-28T14:19:03",
+    "status": "SEM_ACAO",
+    "nivel": "NORMAL",
+    "justificativa": "12.8 mm em 24h abaixo do limite de 20 mm",
+    "fonte_previsao": "open-meteo",
+    "chuva_24h_mm": 12.8,
+    "pico_mm_h": 6.8,
+    "probabilidade_max_pct": 100.0,
+    "linhas_lidas": 0,
+    "inspecoes_validas": 0,
+    "rejeitados": 0,
+    "duplicados": 0,
+    "arquivos_invalidos": 0,
+    "ordens_geradas": 0,
+    "excedentes": 0,
+    "alertas_enviados": 0,
+    "alertas_ignorados": 0,
+    "falhas_envio": 0,
+    "mensagem": "Chuva abaixo do limite - nenhuma ação necessária"
+  },
+  {
     "id": "EX20261127T153959",
     "inicio": "2026-11-27T15:39:59",
     "fim": "2026-11-27T15:39:59",
